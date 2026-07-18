@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "icy_punishing"
