@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "icy_punishing:item/hanna_awareness_slot3"
+  }
+}

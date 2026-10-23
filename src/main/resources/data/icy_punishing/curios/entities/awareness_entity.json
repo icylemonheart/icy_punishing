@@ -1,0 +1,4 @@
+{
+  "entities": ["minecraft:player"],
+  "slots": ["awareness_1", "awareness_2", "awareness_3", "awareness_4", "awareness_5", "awareness_6"]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "CLC",
+    "SCS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "C": {
+      "item": "icy_punishing:awareness_circuit_low"
+    },
+    "L": {
+      "item": "minecraft:dragon_breath"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:awareness_circuit_high",
+    "count": 1
+  }
+}

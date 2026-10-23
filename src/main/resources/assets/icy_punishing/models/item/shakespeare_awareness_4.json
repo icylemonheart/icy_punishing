@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "icy_punishing:item/shakespeare_awareness_slot1"
+  }
+}

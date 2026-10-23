@@ -3,6 +3,8 @@ build/
 run/
 run-data/
 out/
+bin/
+.eclipse/
 *.iml
 *.ipr
 *.iws

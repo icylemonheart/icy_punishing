@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NBN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_block"
+    },
+    "B": {
+      "item": "icy_punishing:breakthrough_alloy_low"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:breakthrough_alloy_high",
+    "count": 1
+  }
+}

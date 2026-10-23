@@ -1,21 +1,23 @@
 # Icy Punishing
 
-A Minecraft Forge mod (1.20.1) inspired by Punishing: Gray Raven, adding consciousness accessories (意识) with set bonuses.
+A Minecraft NeoForge mod (1.21.1) inspired by Punishing: Gray Raven, adding consciousness accessories (意识) with set bonuses, katanas, mobs and materials.
 
 ## Features
 
-- **Awareness Accessories**: Collectible consciousness items with different star ratings (2-6 stars)
+- **Awareness Accessories**: Collectible consciousness items with different star ratings (2-6 stars), with quality-themed slot and tooltip backgrounds
 - **Set Bonuses**: Equip matching sets for powerful bonuses
 - **Upgrade System**: Level up and breakthrough awareness items
-- **Crafting**: Craft materials like nuts, alloy, and circuits
-- **Monster Drops**: Awareness items drop from powerful monsters
+- **Katanas**: 3D-modelled katanas (制式刀, 护身刀, 无铭, 九字之定, 红莲狂士, 红樱, 天狼星, 影打-逆断, 朱桦, 沙利叶) rendered with a custom OBJ mesh pipeline
+- **Mobs**: 修理机工 (Repair Mechanic) with GeckoLib animations
+- **Materials**: Nuts, nut packs, alloys, circuits, upgrade materials and EXP containers
 
 ## Requirements
 
-- Minecraft Forge 1.20.1 (47.1.0)
-- [Icy Lib](https://github.com/icylemonheart/icy_lib)
-- [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios)
-- Java 17
+- Minecraft NeoForge 1.21.1 (21.1.x)
+- [Icy Lib](https://github.com/icylemonheart/icy_lib) 1.1.1+
+- [Curios API](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1
+- GeckoLib 4.9.3
+- Java 21
 
 ## Building
 
@@ -34,10 +36,10 @@ A Minecraft Forge mod (1.20.1) inspired by Punishing: Gray Raven, adding conscio
 ## Installation
 
 1. Build both mods
-2. Copy jars to your Forge mod folder:
-   - `icy_lib/build/libs/icy_lib-1.0.0.jar`
-   - `icy_punishing/build/libs/icy_punishing-1.0.0.jar`
-3. Launch Minecraft with Forge and Curios API
+2. Copy jars to your NeoForge mod folder:
+   - `icy_lib/build/libs/icy_lib-1.1.1.jar`
+   - `icy_punishing/build/libs/icy_punishing-1.1.0.jar`
+3. Launch Minecraft with NeoForge, Curios API and GeckoLib
 
 ## Awareness Sets
 
