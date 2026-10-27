@@ -6,6 +6,7 @@
   "item.icy_punishing.mumei": "无铭",
   "item.icy_punishing.kyuuji": "九字之定",
   "item.icy_punishing.honglian": "红莲狂士",
+  "item.icy_punishing.inverse_fragment_honglian": "逆元碎片-红莲",
   "item.icy_punishing.hongying": "红樱",
   "item.icy_punishing.tianlang": "天狼星",
   "item.icy_punishing.yingda": "影打-逆断",
@@ -29,6 +30,13 @@
   "item.icy_punishing.liesun": "猎隼E-3320",
   "item.icy_punishing.hualun": "滑轮复合弓",
   "item.icy_punishing.lianxi": "练习用复合弓",
+  "item.icy_punishing.ziyuan": "弓·紫鸢",
+  "item.icy_punishing.chunbaishengzan": "弓·纯白圣赞",
+  "item.icy_punishing.yinyejinghong": "弓·夤夜惊鸿",
+  "item.icy_punishing.xuri": "弓·旭日与希望之愿",
+  "item.icy_punishing.xunyezhihu": "弓·巡夜之弧",
+  "item.icy_punishing.xiaye": "弓·遐夜·罔梦欢颂",
+  "item.icy_punishing.rexiahongxian": "弓·热夏虹弦",
 
   "item.icy_punishing.nut": "螺母",
   "item.icy_punishing.nut_pack_small": "小型螺母包",
@@ -243,7 +251,7 @@
   "tooltip.icy_punishing.weapon.hugotou.story": "流水线制作的武器，作为护身武器还算及格。——武器设计师Z",
 
   "tooltip.icy_punishing.weapon.mumei.skill_name": "拔刀无铭",
-  "tooltip.icy_punishing.weapon.mumei.skill_desc": "红球伤害加15%。",
+  "tooltip.icy_punishing.weapon.mumei.skill_desc": "会心伤害加成 +0.15。",
   "tooltip.icy_punishing.weapon.mumei.data": "刀身长0.9米，使用试做型高速钢锻造而成，综合素质不错。\n没有铭刻工匠名字的刀刃，但依然无损它作为兵器的冰冷锐利。",
   "tooltip.icy_punishing.weapon.mumei.story": "它和自己的名字一样，无铭，普普通通。——武器设计师Z",
 
@@ -258,6 +266,9 @@
   "tooltip.icy_punishing.weapon.honglian.data": "刀身长1.0米，使用强化型钨系高速钢锻造而成，耐火性能十分优秀，\n已知的所有地表高温都无法影响它分毫。\n除了刀身的锋利以外，红莲狂士还能够让构造体的攻击模式产生质的变化。",
   "tooltip.icy_punishing.weapon.honglian.story": "根据我的计算，红莲狂士的性能即使面对火山喷发的高温也不会有所降低，\n别拦着我，我要把它丢进去证实我的算法。——武器设计师I",
 
+  "tooltip.icy_punishing.inverse_fragment_honglian.desc": "红莲狂士专属的逆元碎片，持有红莲狂士时在副手放置此物并右键可提升其阶级。",
+  "tooltip.icy_punishing.inverse_fragment_honglian.lore": "从红莲狂士的刀身中剥离出的逆元残片，其中仍残留着构造体与武器共鸣的痕迹。",
+
   "tooltip.icy_punishing.weapon.hongying.construct": "露西亚·深红之渊",
   "tooltip.icy_punishing.weapon.hongying.skill_name": "落樱散华",
   "tooltip.icy_punishing.weapon.hongying.skill_desc": "每消除1个球物理伤害增加2%，持续5秒，可叠加10层，重复触发刷新持续时间。\n进入剑气状态额外获得一个剑气球，有10秒的冷却时间。",
@@ -265,7 +276,7 @@
   "tooltip.icy_punishing.weapon.hongying.story": "落樱还未沾到地面，就尽数被高速的刀光一分为二，\n白发的少女收起腥红的太刀，看起来对这次的锻造十分满意。",
 
   "tooltip.icy_punishing.weapon.tianlang.skill_name": "能量具现",
-  "tooltip.icy_punishing.weapon.tianlang.skill_desc": "增加5%全伤害，消球时会根据消球数量累积能量，\n50点能量后，召出天狼星，存在45秒，冷却时间60秒。",
+  "tooltip.icy_punishing.weapon.tianlang.skill_desc": "置于副手时悬浮于玩家后上方，自动攻击周围12格内的敌对生物，\n并优先攻击玩家最近攻击过的目标（无论其阵营），每秒一次。",
   "tooltip.icy_punishing.weapon.tianlang.data": "刀身长1.1米，搭载着动能转换装置和简易的自律攻击模块，\n动能转换装置将武器运动时产生的动能转化成具有攻击性的光刃，\n按下刀柄上的开关即可控制光刃的弹出与收回，\n非战斗状态下天狼星表现为只有一个刀柄的形态，十分便于携带。\n武器强度相比其它武器相差无几，但由于极致惊艳的外观，被广泛追捧、收藏。",
   "tooltip.icy_punishing.weapon.tianlang.story": "它突破了材质的限制，用纯粹的能量来呈现其性质，\n这把刀值得被载入史册。——武器设计师Z",
 
@@ -496,9 +507,33 @@
   "curios.identifier.awareness_6": "意识#6",
 
   "itemGroup.icy_punishing": "战双帕弥什",
+  "itemGroup.icy_punishing.weapons": "战双帕弥什-武器",
   "itemGroup.icy_punishing.awareness": "战双帕弥什-意识",
   "itemGroup.icy_punishing.material": "战双帕弥什-材料",
   "itemGroup.icy_punishing.creature": "战双帕弥什-生物",
 
-  "entity.icy_punishing.repair_mechanic": "修理机工"
+  "entity.icy_punishing.repair_mechanic": "修理机工",
+  "entity.icy_punishing.roseblade": "蔷薇之剑",
+  "item.icy_punishing.roseblade_spawn_egg": "蔷薇之剑刷怪蛋",
+
+  "key.categories.icy_punishing": "战双帕弥什",
+  "key.icy_punishing.combat": "切换战斗状态",
+  "key.icy_punishing.ult": "必杀技",
+  "hud.icy_punishing.combat": "战斗状态",
+  "hud.icy_punishing.stored": "储备",
+  "hud.icy_punishing.ult_ready": "必杀就绪",
+  "hud.icy_punishing.burst": "爆发 %s秒",
+  "hud.icy_punishing.fire": "火属性附加 %s秒",
+  "hud.icy_punishing.rage": "怒火狂刃 %s/%s层 %s秒",
+  "hud.icy_punishing.dodge_cd": "闪避冷却 %s秒",
+  "message.icy_punishing.ult_not_ready": "必杀能量不足",
+  "message.icy_punishing.ascension_success": "阶级提升：%s",
+  "message.icy_punishing.ascension_invalid": "当前阶级无法使用该核心",
+  "ascension.icy_punishing.0": "S",
+  "ascension.icy_punishing.1": "SS",
+  "ascension.icy_punishing.2": "SSS",
+  "ascension.icy_punishing.3": "SSS+",
+  "tooltip.icy_punishing.weapon.combat_toggle": "按 Z 进入/退出战斗状态",
+  "tooltip.icy_punishing.weapon.combat_orb": "战斗状态中按数字键消除该位置的信号球及相邻同色球",
+  "tooltip.icy_punishing.weapon.combat_ult": "战斗状态中按 X 释放必杀技"
 }

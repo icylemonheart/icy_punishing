@@ -1,5 +1,6 @@
 package com.icypunishing.item;
 
+import com.icylib.init.ModAttributes;
 import com.icylib.upgrade.AwarenessUpgradeManager;
 import com.icylib.upgrade.AwarenessUpgradeStats;
 import com.icylib.upgrade.IUpgradeableItem;
@@ -31,8 +32,15 @@ public class ObjKatanaItem extends SwordItem implements IUpgradeableItem {
 
     private static final String TAG_UPGRADE_STATS = "weapon_upgrade_stats";
     private static final String TAG_UPGRADE = "weapon_upgrade";
+    private static final String TAG_ASCENSION = "ascension";
     private static final ResourceLocation UPGRADE_ATTACK_ID =
             ResourceLocation.fromNamespaceAndPath("icy_punishing", "weapon_upgrade_attack");
+    private static final ResourceLocation UPGRADE_CRIT_ID =
+            ResourceLocation.fromNamespaceAndPath("icy_punishing", "weapon_upgrade_crit");
+    private static final ResourceLocation MUMEI_CRIT_DAMAGE_ID =
+            ResourceLocation.fromNamespaceAndPath("icy_punishing", "mumei_crit_damage");
+    /** 无铭：拔刀无铭，额外 0.15 会心伤害加成。 */
+    private static final double MUMEI_CRIT_DAMAGE_BONUS = 0.15;
 
     private final String modelId;
 
@@ -47,6 +55,55 @@ public class ObjKatanaItem extends SwordItem implements IUpgradeableItem {
 
     public String getModelId() {
         return modelId;
+    }
+
+    public int getAscension(ItemStack stack) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        return tag.getInt(TAG_ASCENSION);
+    }
+
+    public void setAscension(ItemStack stack, int level) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        tag.putInt(TAG_ASCENSION, level);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+
+    @Override
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(net.minecraft.world.level.Level level, Player player, net.minecraft.world.InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (hand != net.minecraft.world.InteractionHand.MAIN_HAND) {
+            return super.use(level, player, hand);
+        }
+        ItemStack offhand = player.getOffhandItem();
+        int asc = getAscension(stack);
+        boolean low = offhand.is(com.icypunishing.registry.ModItems.WEAPON_BREAKTHROUGH_CORE_LOW.get());
+        boolean high = offhand.is(com.icypunishing.registry.ModItems.WEAPON_BREAKTHROUGH_CORE_HIGH.get());
+        // 逆元碎片-红莲：红莲狂士专属进阶材料（替代突破核心，旧路径已删除）
+        boolean fragment = "honglian".equals(modelId)
+                && offhand.is(com.icypunishing.registry.ModItems.INVERSE_FRAGMENT_HONGLIAN.get());
+        boolean valid = "honglian".equals(modelId)
+                ? (fragment && asc < 3)
+                : (low && asc == 0) || (high && (asc == 1 || asc == 2));
+        if (!valid) {
+            if (low || high || fragment) {
+                if (!level.isClientSide) {
+                    player.displayClientMessage(Component.translatable("message.icy_punishing.ascension_invalid"), true);
+                }
+                return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+            }
+            return super.use(level, player, hand);
+        }
+        if (!level.isClientSide) {
+            if (!player.getAbilities().instabuild) {
+                offhand.shrink(1);
+            }
+            setAscension(stack, asc + 1);
+            level.playSound(null, player.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP,
+                    net.minecraft.sounds.SoundSource.PLAYERS, 1.0f, 1.2f);
+            player.displayClientMessage(Component.translatable("message.icy_punishing.ascension_success",
+                    Component.translatable("ascension.icy_punishing." + (asc + 1))), true);
+        }
+        return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
     @Override
@@ -188,17 +245,40 @@ public class ObjKatanaItem extends SwordItem implements IUpgradeableItem {
         if (!(stack.getItem() instanceof ObjKatanaItem katana)) {
             return;
         }
-        if (!WeaponUpgradeData.hasUpgradeData(katana.getModelId())) {
+        String modelId = katana.getModelId();
+        if (!WeaponUpgradeData.hasUpgradeData(modelId)) {
             return;
         }
-        double bonus = katana.getAttack(stack) - WeaponUpgradeData.getBaseAttack(katana.getModelId());
-        if (bonus <= 0) {
-            return;
-        }
+        double attack = katana.getAttack(stack);
+        double baseAttack = WeaponUpgradeData.getBaseAttack(modelId);
+        double maxAttack = WeaponUpgradeData.getMaxAttack(modelId);
+        double progress = maxAttack > baseAttack
+                ? Math.min(1.0, Math.max(0.0, (attack - baseAttack) / (maxAttack - baseAttack)))
+                : 0.0;
+        int baseCrit = WeaponUpgradeData.getBaseCrit(modelId);
+        int maxCrit = WeaponUpgradeData.getMaxCrit(modelId);
+        double crit = baseCrit + (maxCrit - baseCrit) * progress;
+
+        // 清除武器默认攻击伤害修饰符，以 WIKI 攻击数值为准
+        event.removeAllModifiersFor(Attributes.ATTACK_DAMAGE);
         event.addModifier(
                 Attributes.ATTACK_DAMAGE,
-                new AttributeModifier(UPGRADE_ATTACK_ID, bonus, AttributeModifier.Operation.ADD_VALUE),
-                EquipmentSlotGroup.MAINHAND);
+                new AttributeModifier(UPGRADE_ATTACK_ID, attack, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.HAND);
+        // 会心（暴击率）
+        event.addModifier(
+                ModAttributes.CRITICAL_STRIKE_CHANCE,
+                new AttributeModifier(UPGRADE_CRIT_ID, crit, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.HAND);
+
+        // 无铭「拔刀无铭」：额外 0.15 会心伤害加成
+        if ("mumei".equals(modelId)) {
+            event.addModifier(
+                    ModAttributes.CRITICAL_STRIKE_MULTIPLIER_ADD,
+                    new AttributeModifier(MUMEI_CRIT_DAMAGE_ID, MUMEI_CRIT_DAMAGE_BONUS,
+                            AttributeModifier.Operation.ADD_VALUE),
+                    EquipmentSlotGroup.HAND);
+        }
     }
 
     @Override
@@ -230,6 +310,25 @@ public class ObjKatanaItem extends SwordItem implements IUpgradeableItem {
             default -> net.minecraft.ChatFormatting.WHITE;
         };
         tooltipComponents.add(Component.literal(stars).withStyle(rankColor));
+
+        int ascension = getAscension(stack);
+        net.minecraft.ChatFormatting ascColor = switch (ascension) {
+            case 1 -> net.minecraft.ChatFormatting.BLUE;
+            case 2 -> net.minecraft.ChatFormatting.GOLD;
+            case 3 -> net.minecraft.ChatFormatting.RED;
+            default -> net.minecraft.ChatFormatting.WHITE;
+        };
+        tooltipComponents.add(Component.literal("阶级: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+                .append(Component.translatable("ascension.icy_punishing." + ascension).withStyle(ascColor)));
+
+        if (com.icypunishing.skill.SkillSetRegistry.hasSkillSet(modelId)) {
+            tooltipComponents.add(Component.translatable("tooltip.icy_punishing.weapon.combat_toggle")
+                    .withStyle(net.minecraft.ChatFormatting.YELLOW));
+            tooltipComponents.add(Component.translatable("tooltip.icy_punishing.weapon.combat_orb")
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("tooltip.icy_punishing.weapon.combat_ult")
+                    .withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
 
         var typeLine = Component.literal("武器类型: ").withStyle(net.minecraft.ChatFormatting.GRAY)
                 .append(Component.literal("太刀").withStyle(net.minecraft.ChatFormatting.WHITE));

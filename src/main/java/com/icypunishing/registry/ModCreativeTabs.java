@@ -243,11 +243,20 @@ public class ModCreativeTabs {
                     .title(Component.translatable("itemGroup.icy_punishing"))
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.HUMANITY_STANDS_HERE.get());
+                    })
+                    .build());
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> WEAPONS_TAB = CREATIVE_MODE_TABS.register("weapons",
+            () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(ModItems.HONGLIAN.get()))
+                    .title(Component.translatable("itemGroup.icy_punishing.weapons"))
+                    .displayItems((parameters, output) -> {
                         output.accept(ModItems.TACHI.get());
                         output.accept(ModItems.HUGOTOU.get());
                         output.accept(ModItems.MUMEI.get());
                         output.accept(ModItems.KYUUJI.get());
                         output.accept(ModItems.HONGLIAN.get());
+                        output.accept(ModItems.INVERSE_FRAGMENT_HONGLIAN.get());
                         output.accept(ModItems.HONGYING.get());
                         output.accept(ModItems.TIANLANG.get());
                         output.accept(ModItems.YINGDA.get());
@@ -265,21 +274,19 @@ public class ModCreativeTabs {
                         output.accept(ModItems.GULINFENGREN.get());
                         output.accept(ModItems.MUSEYIDIAN.get());
                         output.accept(ModItems.FLORANUM.get());
+                        output.accept(ModItems.LIANXI.get());
+                        output.accept(ModItems.HUALUN.get());
+                        output.accept(ModItems.LIESUN.get());
                         output.accept(ModItems.LEIMIER.get());
                         output.accept(ModItems.LAITENING.get());
                         output.accept(ModItems.ASITELIYA.get());
-                        output.accept(ModItems.LIESUN.get());
-                        output.accept(ModItems.HUALUN.get());
-                        output.accept(ModItems.LIANXI.get());
-                    })
-                    .build());
-
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATURE_TAB = CREATIVE_MODE_TABS.register("creature",
-            () -> CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(ModItems.REPAIR_MECHANIC_SPAWN_EGG.get()))
-                    .title(Component.translatable("itemGroup.icy_punishing.creature"))
-                    .displayItems((parameters, output) -> {
-                        output.accept(ModItems.REPAIR_MECHANIC_SPAWN_EGG.get());
+                        output.accept(ModItems.ZIYUAN.get());
+                        output.accept(ModItems.CHUNBAISHENGZAN.get());
+                        output.accept(ModItems.YINYEJINGHONG.get());
+                        output.accept(ModItems.XURI.get());
+                        output.accept(ModItems.XUNYEZHIHU.get());
+                        output.accept(ModItems.XIAYE.get());
+                        output.accept(ModItems.REXIAHONGXIAN.get());
                     })
                     .build());
 

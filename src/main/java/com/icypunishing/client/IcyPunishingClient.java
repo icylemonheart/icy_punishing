@@ -1,14 +1,18 @@
 package com.icypunishing.client;
 
 import com.icylib.client.upgrade.UpgradeScreenRendererManager;
-import com.icypunishing.client.entity.RepairMechanicModel;
+import com.icypunishing.client.entity.TianlangBladeRenderer;
 import com.icypunishing.client.obj.ObjKatanaRenderer;
 import com.icypunishing.registry.ModEntities;
 import com.icypunishing.registry.ModItems;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,17 +21,14 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.slf4j.Logger;
 import software.bernie.geckolib.loading.object.BakedModelFactory;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 @EventBusSubscriber(modid = "icy_punishing", bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class IcyPunishingClient {
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     static {
+        // 注册支持 poly_mesh 的模型工厂，否则只有 poly_mesh 的模型不会产生任何几何体
         BakedModelFactory.register("icy_punishing", new IcyPunishingModelFactory());
-        LOGGER.info("[ICY] IcyPunishingModelFactory registered (static init) for namespace icy_punishing");
     }
 
     @SubscribeEvent
@@ -39,8 +40,7 @@ public class IcyPunishingClient {
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(ModEntities.REPAIR_MECHANIC.get(),
-                context -> new GeoEntityRenderer<>(context, new RepairMechanicModel()));
+        event.registerEntityRenderer(ModEntities.TIANLANG_BLADE.get(), TianlangBladeRenderer::new);
     }
 
     @SubscribeEvent
@@ -134,7 +134,18 @@ public class IcyPunishingClient {
                 if (renderer == null) {
                     renderer = new ObjKatanaRenderer(
                             ResourceLocation.fromNamespaceAndPath("icy_punishing", "model/katana/tianlang_blade.obj"),
-                            ResourceLocation.fromNamespaceAndPath("icy_punishing", "model/katana/tianlang_blade.png"));
+                            ResourceLocation.fromNamespaceAndPath("icy_punishing", "model/katana/tianlang_blade.png")) {
+                        @Override
+                        public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack,
+                                                 MultiBufferSource buffer, int packedLight, int packedOverlay) {
+                            // 天狼星置于副手时由 TianlangBladeEntity 悬浮渲染，手部不再显示本体
+                            if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+                                    || displayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+                                return;
+                            }
+                            super.renderByItem(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
+                        }
+                    };
                 }
                 return renderer;
             }
@@ -175,6 +186,14 @@ public class IcyPunishingClient {
         registerKatana(event, ModItems.LIESUN, "liesun", true);
         registerKatana(event, ModItems.HUALUN, "hualun", true);
         registerKatana(event, ModItems.LIANXI, "lianxi", true);
+
+        registerKatana(event, ModItems.ZIYUAN, "ziyuan", true);
+        registerKatana(event, ModItems.CHUNBAISHENGZAN, "chunbaishengzan", true);
+        registerKatana(event, ModItems.YINYEJINGHONG, "yinyejinghong", true);
+        registerKatana(event, ModItems.XURI, "xuri", true);
+        registerKatana(event, ModItems.XUNYEZHIHU, "xunyezhihu", true);
+        registerKatana(event, ModItems.XIAYE, "xiaye", true);
+        registerKatana(event, ModItems.REXIAHONGXIAN, "rexiahongxian", true);
     }
 
     private static void registerKatana(RegisterClientExtensionsEvent event,

@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -464,9 +464,6 @@ public class ModItems {
     public static final DeferredHolder<Item, Item> HUMANITY_STANDS_HERE = ITEMS.register("humanity_stands_here",
             () -> new UpgradeKeyItem(new Item.Properties().stacksTo(1)));
 
-    public static final DeferredHolder<Item, Item> REPAIR_MECHANIC_SPAWN_EGG = ITEMS.register("repair_mechanic_spawn_egg",
-            () -> new DeferredSpawnEggItem(() -> ModEntities.REPAIR_MECHANIC.get(), 0xDDDAD4, 0xFF2418, new Item.Properties()));
-
     // 制式刀（太刀类）—— 静态 3D 模型
     public static final DeferredHolder<Item, Item> TACHI = ITEMS.register("tachi",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
@@ -491,6 +488,15 @@ public class ModItems {
     public static final DeferredHolder<Item, Item> HONGLIAN = ITEMS.register("honglian",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 9, -2.6F)), "honglian"));
+
+    // 逆元碎片-红莲——红莲狂士专属进阶材料
+    public static final DeferredHolder<Item, Item> INVERSE_FRAGMENT_HONGLIAN = ITEMS.register("inverse_fragment_honglian",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_honglian.desc")
+                            .withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_honglian.lore")
+                            .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
 
     // 红樱——太刀，全红刀身
     public static final DeferredHolder<Item, Item> HONGYING = ITEMS.register("hongying",
@@ -562,6 +568,22 @@ public class ModItems {
             () -> new BowItem(new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, Item> LIANXI = ITEMS.register("lianxi",
             () -> new BowItem(new Item.Properties().stacksTo(1)));
+
+    // 弓涂层——纯外观
+    public static final DeferredHolder<Item, Item> ZIYUAN = ITEMS.register("ziyuan",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> CHUNBAISHENGZAN = ITEMS.register("chunbaishengzan",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> YINYEJINGHONG = ITEMS.register("yinyejinghong",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> XURI = ITEMS.register("xuri",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> XUNYEZHIHU = ITEMS.register("xunyezhihu",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> XIAYE = ITEMS.register("xiaye",
+            () -> new Item(new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> REXIAHONGXIAN = ITEMS.register("rexiahongxian",
+            () -> new Item(new Item.Properties().stacksTo(1)));
 
     public static final DeferredHolder<Item, Item> NUT = ITEMS.register("nut",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),

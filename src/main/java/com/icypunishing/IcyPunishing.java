@@ -7,7 +7,10 @@ import com.icypunishing.event.AwarenessDropHandler;
 import com.icypunishing.event.AwarenessEffectHandler;
 import com.icypunishing.event.AwarenessStatsHandler;
 import com.icypunishing.event.HyperCalculationSpaceHandler;
+import com.icypunishing.event.SkillCombatHandler;
+import com.icypunishing.registry.ModAttachments;
 import com.icypunishing.registry.ModAwarenessSlots;
+import com.icypunishing.skill.SkillSetRegistry;
 import com.icypunishing.registry.ModCreativeTabs;
 import com.icypunishing.registry.ModEffects;
 import com.icypunishing.registry.ModEntities;
@@ -35,14 +38,17 @@ public class IcyPunishing {
         ModAwarenessSlots.register(bus);
         ModEffects.register(bus);
         ModEntities.register(bus);
+        ModAttachments.register(bus);
 
         bus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(new SkillCombatHandler());
         NeoForge.EVENT_BUS.register(new AwarenessEffectHandler());
         NeoForge.EVENT_BUS.register(new AwarenessDropHandler());
         NeoForge.EVENT_BUS.register(new AwarenessStatsHandler());
         NeoForge.EVENT_BUS.register(new HyperCalculationSpaceHandler());
+        NeoForge.EVENT_BUS.register(new com.icypunishing.event.WeaponSkillHandler());
 
         modContainer.registerConfig(ModConfig.Type.COMMON, IcyPunishingConfig.SPEC, "icy_punishing-common.toml");
     }
@@ -56,6 +62,7 @@ public class IcyPunishing {
                 }
             });
             registerQualities();
+            SkillSetRegistry.bootstrap();
             LOGGER.info("Icy Punishing v1.0.1 (NeoForge 1.21.1) loaded successfully!");
             LOGGER.info("Awareness slots registered: 6");
         });
