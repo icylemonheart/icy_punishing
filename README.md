@@ -1,5 +1,7 @@
 # Icy Punishing（冰洁·惩击）
 
+[English](README_EN.md) | 简体中文
+
 > 以《战双帕弥什》为灵感的 NeoForge 战斗向模组：意识套装、武器、信号球三消与角色专属技能组。
 
 A NeoForge 1.21.1 combat mod inspired by *Punishing: Gray Raven* — awareness set bonuses, signal-orb combos, katanas and character skill sets.
