@@ -7,10 +7,7 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-/**
- * 带自定义 tooltip 的材料物品。
- * 构造时传入 tooltip 文本行列表，会在 appendHoverText 中追加到物品提示中。
- */
+/** 材料物品：构造时传入的 tooltip 行会追加到物品提示。 */
 public class MaterialItem extends Item {
     private final List<Component> tooltipLines;
 

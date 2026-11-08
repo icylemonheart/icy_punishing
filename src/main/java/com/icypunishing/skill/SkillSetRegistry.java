@@ -2,6 +2,8 @@ package com.icypunishing.skill;
 
 import com.icypunishing.item.ObjKatanaItem;
 import com.icypunishing.skill.honglian.HonglianSkillSet;
+import com.icypunishing.skill.hongying.HongyingSkillSet;
+import com.icypunishing.skill.yingda.YingdaSkillSet;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,6 +18,8 @@ public final class SkillSetRegistry {
 
     public static void bootstrap() {
         register(new HonglianSkillSet());
+        register(new YingdaSkillSet());
+        register(new HongyingSkillSet());
     }
 
     public static void register(CharacterSkillSet set) {

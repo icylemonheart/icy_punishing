@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "pattern": [
+    "FFF",
+    "FKF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "mut:flame_gold_ingot"
+    },
+    "K": {
+      "item": "icy_punishing:kyuuji"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:honglian",
+    "count": 1
+  }
+}

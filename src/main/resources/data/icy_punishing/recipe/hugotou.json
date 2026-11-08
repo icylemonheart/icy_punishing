@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "pattern": [
+    "OOO",
+    "OTO",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+      "item": "mut:crying_obsidian_ingot"
+    },
+    "T": {
+      "item": "icy_punishing:tachi"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:hugotou",
+    "count": 1
+  }
+}

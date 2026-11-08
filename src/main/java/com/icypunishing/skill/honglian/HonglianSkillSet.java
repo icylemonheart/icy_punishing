@@ -4,9 +4,9 @@ import com.icypunishing.event.SkillCombatHandler;
 import com.icypunishing.skill.CharacterSkillSet;
 import com.icypunishing.skill.SignalOrb;
 import com.icypunishing.skill.SkillState;
+import com.icypunishing.skill.SkillUpgradeHelper;
 import com.icypunishing.skill.SkillUtils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,8 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.phys.Vec3;
-
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -107,21 +105,19 @@ public class HonglianSkillSet implements CharacterSkillSet {
         }
     }
 
-    private void sendCastVfx(ServerPlayer player, Vec3 look, byte shape, float distance,
-                             float radius, float thickness, int color, int lifeMillis) {
-        Vec3 eye = player.getEyePosition();
-        SkillUtils.sendVfx(player, shape, eye.x + look.x * distance, eye.y + look.y * distance,
-                eye.z + look.z * distance, 0.0f, radius, thickness, color, lifeMillis);
-    }
-
     private void castRed(ServerPlayer player, SkillState state, int tier) {
         Vec3 look = player.getLookAngle().normalize();
         player.setDeltaMovement(look.scale(0.9).add(0, 0.05, 0));
         player.hurtMarked = true;
-        sendCastVfx(player, look, (byte) 4, 0.9f, 4.2f, 1.15f, 0xFF2A20, 320);
+        // 红球：贯穿全屏的细红线 + 碎刃，强调突刺拉扯
+        Vec3 eye = player.getEyePosition();
+        SkillUtils.sendVfx(player, (byte) 24,
+                eye.x + look.x * 0.7, eye.y + look.y * 0.7, eye.z + look.z * 0.7,
+                0.0f, 6.0f, 0.05f, 0xFF2A20, 320, (byte) 2);
         List<LivingEntity> targets = SkillUtils.sectorTargets(player, 3.5, 0.5);
         for (LivingEntity target : targets) {
-            SkillCombatHandler.dealBonusPhysical(player, target, RED_RATIO[tier - 1]);
+            SkillCombatHandler.dealBonusPhysical(player, target,
+                    RED_RATIO[tier - 1] * SkillUpgradeHelper.orbMultiplier(player, SignalOrb.RED));
             applyFireIfActive(player, target, state);
             Vec3 pull = player.position().subtract(target.position()).normalize().scale(0.8).add(0, 0.25, 0);
             target.setDeltaMovement(pull);
@@ -134,10 +130,13 @@ public class HonglianSkillSet implements CharacterSkillSet {
         Vec3 look = player.getLookAngle().normalize();
         player.setDeltaMovement(look.scale(0.4));
         player.hurtMarked = true;
-        sendCastVfx(player, look, (byte) 1, 0.5f, 2.6f, 1.1f, 0xFFB81E, 340);
+        // 黄球：贴地白环 + 上挑橙黄月牙刃光
+        SkillUtils.sendVfx(player, (byte) 22, player.getX(), player.getY() + 0.06, player.getZ(),
+                0.0f, 3.0f, 0.95f, 0xFFC83C, 460);
         List<LivingEntity> targets = SkillUtils.sectorTargets(player, 3.0, 0.5);
         for (LivingEntity target : targets) {
-            SkillCombatHandler.dealBonusPhysical(player, target, YELLOW_RATIO[tier - 1]);
+            SkillCombatHandler.dealBonusPhysical(player, target,
+                    YELLOW_RATIO[tier - 1] * SkillUpgradeHelper.orbMultiplier(player, SignalOrb.YELLOW));
             applyFireIfActive(player, target, state);
             Vec3 cur = target.getDeltaMovement();
             target.setDeltaMovement(cur.x, 0.6, cur.z);
@@ -147,13 +146,20 @@ public class HonglianSkillSet implements CharacterSkillSet {
     }
 
     private void castBlue(ServerPlayer player, SkillState state, int tier) {
-        sendCastVfx(player, player.getLookAngle().normalize(), (byte) 5, 0.2f, 3.2f, 1.0f, 0x2A6BFF, 480);
+        // 蓝球：持刀手侧爆出红黑刀气，不跟随
+        Vec3 look = player.getLookAngle().normalize();
+        Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
+        Vec3 eye = player.getEyePosition();
+        SkillUtils.sendVfx(player, (byte) 23,
+                eye.x + right.x * 0.5, eye.y - 0.25, eye.z + right.z * 0.5,
+                0.0f, 0.7f, 0.09f, 0xFF3A22, 620);
         List<LivingEntity> targets = SkillUtils.sectorTargets(player, 3.0, 0.5);
         for (LivingEntity target : targets) {
-            SkillCombatHandler.dealBonusPhysical(player, target, BLUE_RATIO[tier - 1]);
+            SkillCombatHandler.dealBonusPhysical(player, target,
+                    BLUE_RATIO[tier - 1] * SkillUpgradeHelper.orbMultiplier(player, SignalOrb.BLUE));
         }
         state.setFireBuffTicks(BLUE_DURATION[tier - 1]);
-        state.setFireRatio(BLUE_FIRE_RATIO[tier - 1]);
+        state.setFireRatio(BLUE_FIRE_RATIO[tier - 1] * SkillUpgradeHelper.orbMultiplier(player, SignalOrb.BLUE));
         player.level().playSound(null, player.blockPosition(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
@@ -170,6 +176,11 @@ public class HonglianSkillSet implements CharacterSkillSet {
         UltimateTask task = new UltimateTask();
         task.nextTick = player.level().getGameTime() + 4;
         ultimateTasks.put(player.getUUID(), task);
+        // 起手：脚下白细环 + 悬浮红色刀影环（全程残留）
+        SkillUtils.sendVfx(player, (byte) 21, player.getX(), player.getY() + 0.05, player.getZ(),
+                0.0f, 1.3f, 0.16f, 0xFF2A1E, 2600, (byte) 5);
+        SkillUtils.sendVfx(player, (byte) 2, player.getX(), player.getY() + 0.06, player.getZ(),
+                0.0f, 2.0f, 0.07f, 0xFFFFFF, 2600);
         player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 0.8f, 1.5f);
         SkillUtils.sync(player);
     }
@@ -198,9 +209,8 @@ public class HonglianSkillSet implements CharacterSkillSet {
 
         if (state.getBurstTicks() > 0) {
             float ratio = BURST_HIT_RATIO * (asc >= 2 ? 1.0f + SSS_BURST_BONUS : 1.0f);
-            // 主手红莲狂士斩击
+            // 主副手投影同步斩击（双刀齐击）
             SkillCombatHandler.dealBonusPhysical(player, target, ratio);
-            // 副手投影同步斩击（双刀齐击）
             SkillCombatHandler.dealBonusPhysical(player, target, ratio);
             sendDualSlash(player);
         }
@@ -255,12 +265,8 @@ public class HonglianSkillSet implements CharacterSkillSet {
             state.setFireBuffTicks(state.getFireBuffTicks() - 1);
             if (state.getFireBuffTicks() == 0) {
                 dirty = true;
-            } else if (player.level().getGameTime() % 2 == 0) {
-                // 蓝球余烬：刀身红色光雾
-                spawnBladeEmbers(player);
             }
         }
-        // 怒火狂刃层数到期清空
         if (state.getRageTicks() > 0) {
             state.setRageTicks(state.getRageTicks() - 1);
             if (state.getRageTicks() == 0) {
@@ -304,7 +310,8 @@ public class HonglianSkillSet implements CharacterSkillSet {
                             side * 12.0f, 4.6f, 1.5f, 0xFF1E3C, 260, ULT_SLASH_STYLES[step % ULT_SLASH_COUNT]);
                     List<LivingEntity> targets = SkillUtils.sectorTargets(player, 4.0, 0.5);
                     for (LivingEntity target : targets) {
-                        SkillCombatHandler.dealBonusPhysical(player, target, ULT_SLASH_RATIO);
+                        SkillCombatHandler.dealBonusPhysical(player, target,
+                                ULT_SLASH_RATIO * SkillUpgradeHelper.ultMultiplier(player));
                     }
                     player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0f, 1.2f);
                     player.swing(player.getUsedItemHand(), true);
@@ -317,11 +324,17 @@ public class HonglianSkillSet implements CharacterSkillSet {
                             eye.z + look.z * 0.6, 0.0f, 5.2f, 1.7f, 0xFF0F2A, 620);
                     SkillUtils.sendVfx(player, (byte) 6, eye.x + look.x * 1.2, eye.y + look.y * 1.2,
                             eye.z + look.z * 1.2, 0.0f, 4.0f, 0.9f, 0xFF5A2A, 620);
+                    // 终结：脚下金环 + 竖直白光 + 刀影环再爆
+                    SkillUtils.sendVfx(player, (byte) 2, player.getX(), player.getY() + 0.06, player.getZ(),
+                            0.0f, 3.0f, 0.08f, 0xFFD24A, 1800);
                     SkillUtils.sendVfx(player, (byte) 7, player.getX(), player.getY(), player.getZ(),
-                            0.0f, 3.0f, 0.9f, 0xFF2A20, 520);
+                            0.0f, 1.4f, 0.05f, 0xFFFFFF, 1400);
+                    SkillUtils.sendVfx(player, (byte) 21, player.getX(), player.getY() + 0.05, player.getZ(),
+                            0.0f, 1.5f, 0.2f, 0xFF2A1E, 1600, (byte) 6);
                     List<LivingEntity> targets = SkillUtils.sectorTargets(player, 4.5, 0.5);
                     for (LivingEntity target : targets) {
-                        SkillCombatHandler.dealBonusPhysical(player, target, ULT_FINAL_RATIO);
+                        SkillCombatHandler.dealBonusPhysical(player, target,
+                                ULT_FINAL_RATIO * SkillUpgradeHelper.ultMultiplier(player));
                         Vec3 cur = target.getDeltaMovement();
                         target.setDeltaMovement(cur.x, 0.5, cur.z);
                         target.hurtMarked = true;
@@ -333,31 +346,6 @@ public class HonglianSkillSet implements CharacterSkillSet {
             if (!player.isAlive()) {
                 ultimateTasks.remove(player.getUUID());
             }
-        }
-    }
-
-    /** 蓝球余烬：沿刀身生成红色粒子光雾，直观提示火伤效果仍在生效。 */
-    private void spawnBladeEmbers(ServerPlayer player) {
-        Vec3 eye = player.getEyePosition();
-        Vec3 look = player.getLookAngle().normalize();
-        Vec3 right = look.cross(new Vec3(0, 1, 0));
-        if (right.lengthSqr() < 1.0E-6) {
-            right = new Vec3(1, 0, 0);
-        }
-        right = right.normalize();
-        Vec3 base = eye.add(look.scale(0.35)).add(right.scale(-0.32)).add(0, -0.28, 0);
-
-        DustParticleOptions ember = new DustParticleOptions(new Vector3f(1.0f, 0.28f, 0.12f), 1.35f);
-        DustParticleOptions core = new DustParticleOptions(new Vector3f(1.0f, 0.72f, 0.35f), 0.8f);
-        var random = player.getRandom();
-        for (int i = 0; i < 4; i++) {
-            double t = 0.15 + 0.9 * random.nextDouble();
-            Vec3 p = base.add(look.scale(t)).add(0, t * 0.22, 0)
-                    .add(right.scale((random.nextDouble() - 0.5) * 0.12))
-                    .add(0, (random.nextDouble() - 0.5) * 0.12, 0);
-            boolean hot = random.nextFloat() < 0.35f;
-            player.serverLevel().sendParticles(hot ? core : ember, p.x, p.y, p.z, 1,
-                    0.02, 0.02, 0.02, 0.0);
         }
     }
 
@@ -412,7 +400,6 @@ public class HonglianSkillSet implements CharacterSkillSet {
             restoreOffhand(player);
             SkillUtils.sync(player);
         } else {
-            // 防御性清理：若仍有残留投影则恢复
             ItemStack off = player.getOffhandItem();
             if (isProjection(off)) {
                 restoreOffhand(player);

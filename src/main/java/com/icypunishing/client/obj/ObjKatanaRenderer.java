@@ -14,11 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 使用 OBJ 网格渲染太刀物品。
- * 所有场景（含 GUI）都只渲染 blade（entityCutout）+ blade_luminous（eyes + 全亮 light=0xF000F0），
- * item_blade 底板不渲染。
- */
+/** 用 OBJ 网格渲染太刀物品：只画 blade / blade_luminous，item_blade 底板跳过。 */
 public class ObjKatanaRenderer extends BlockEntityWithoutLevelRenderer {
 
     private final ResourceLocation modelLoc;
@@ -51,8 +47,8 @@ public class ObjKatanaRenderer extends BlockEntityWithoutLevelRenderer {
             computeGuiCenter(model);
             pose.translate(0.5F, 0.5F, 0.5F);
             pose.scale(0.55F, 0.55F, 0.55F);
-            pose.translate(-guiCx, -guiCy, -guiCz);
             pose.mulPose(Axis.ZP.rotationDegrees(-45.0F));
+            pose.translate(-guiCx, -guiCy, -guiCz);
         } else {
             // 抵消原版管线调用 BEWLR 前的 -0.5 平移（与 GeckoLib 约定一致），让模型原点落在手部锚点
             pose.translate(0.5F, 0.51F, 0.5F);
@@ -63,16 +59,26 @@ public class ObjKatanaRenderer extends BlockEntityWithoutLevelRenderer {
             }
         }
 
+        // 单层渲染：baseColor 实体光照，luminous 组全亮
+        renderLayer(model, pose, buf, RenderType.entityCutoutNoCull(textureLoc), light, overlay);
+
+        pose.popPose();
+
+        if (buf instanceof MultiBufferSource.BufferSource bs) {
+            bs.endBatch();
+        }
+    }
+
+    private void renderLayer(ObjModel model, PoseStack pose, MultiBufferSource buf,
+                             RenderType rt, int light, int overlay) {
+        VertexConsumer vc = buf.getBuffer(rt);
         for (Map.Entry<String, List<ObjModel.Face>> entry : model.groups.entrySet()) {
             String group = entry.getKey();
 
             // 平面图标底板不渲染，所有场景都用真刀身
             if ("item_blade".equalsIgnoreCase(group)) continue;
 
-            boolean luminous = "blade_luminous".equalsIgnoreCase(group);
-            RenderType rt = RenderType.entityCutoutNoCull(textureLoc);
-            VertexConsumer vc = buf.getBuffer(rt);
-            int useLight = luminous ? 0xF000F0 : light;
+            int useLight = "blade_luminous".equalsIgnoreCase(group) ? 0xF000F0 : light;
 
             for (ObjModel.Face f : entry.getValue()) {
                 int n = f.count;
@@ -88,12 +94,6 @@ public class ObjKatanaRenderer extends BlockEntityWithoutLevelRenderer {
                     writeVertex(vc, pose, f, 2, useLight, overlay);
                 }
             }
-        }
-
-        pose.popPose();
-
-        if (buf instanceof MultiBufferSource.BufferSource bs) {
-            bs.endBatch();
         }
     }
 

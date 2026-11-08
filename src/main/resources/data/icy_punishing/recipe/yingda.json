@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "pattern": [
+    "TTT",
+    "TKT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "mut:thunder_copper_star"
+    },
+    "K": {
+      "item": "icy_punishing:kyuuji"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:yingda",
+    "count": 1
+  }
+}

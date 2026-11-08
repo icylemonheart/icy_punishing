@@ -54,12 +54,11 @@ public class UpgradeScreenRenderer implements IUpgradeScreenRenderer {
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int x, int y, int width, int height, float partialTick) {
         if (hasAnimation && animationFrames != null && animationFrames.length > 0) {
+            // 全屏铺满背景动画
             guiGraphics.blit(animationFrames[currentFrame], x, y, 0, 0, width, height, width, height);
         } else {
-            guiGraphics.fill(x, y, x + width, y + height, 0x80000000);
+            guiGraphics.fillGradient(x, y, x + width, y + height, 0xCC0A0F14, 0xE0141A21);
         }
-
-        guiGraphics.fill(x + 54, y + 80, x + 122, y + 134, 0x80000000);
     }
 
     @Override

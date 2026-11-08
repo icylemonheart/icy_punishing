@@ -10,8 +10,7 @@ import java.util.Map;
 public class WeaponUpgradeData {
     public record Entry(int rank, double baseAttack, double maxAttack, int baseCrit, int maxCrit, int levelCap) {}
 
-    // 数值取自 WIKI（属性 初始/MAX，等级上限）
-    // 朱桦/沙利叶仅形态一拥有属性，其余形态机制待实现
+    // WIKI 数值（属性 初始/MAX、等级上限）；朱桦/沙利叶仅形态一有数据
     private static final Map<String, Entry> WEAPONS = Map.ofEntries(
             Map.entry("tachi", new Entry(2, 32, 37, 14, 19, 10)),
             Map.entry("hugotou", new Entry(3, 35, 104, 15, 55, 25)),
@@ -59,7 +58,7 @@ public class WeaponUpgradeData {
         return entry != null ? entry.levelCap() : 0;
     }
 
-    // 朱桦/沙利叶的四形态共用同一份 tooltip 文本
+    // 朱桦/沙利叶四形态共用一份 tooltip
     public static String getLoreId(String modelId) {
         if (modelId.startsWith("zhuhua")) {
             return "zhuhua";

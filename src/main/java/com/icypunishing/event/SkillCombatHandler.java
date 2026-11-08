@@ -6,6 +6,7 @@ import com.icypunishing.skill.CharacterSkillSet;
 import com.icypunishing.skill.SignalOrb;
 import com.icypunishing.skill.SkillSetRegistry;
 import com.icypunishing.skill.SkillState;
+import com.icypunishing.skill.SkillUpgradeHelper;
 import com.icypunishing.skill.SkillUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,7 +32,6 @@ public class SkillCombatHandler {
     private static final ResourceLocation CAPTAIN_ID =
             ResourceLocation.fromNamespaceAndPath("icy_punishing", "honglian_captain");
     private static final float CLASS_EXTRA_BONUS = 1.20f;
-    private static final float SSS_PLUS_NORMAL_BONUS = 0.15f;
     private static final long COMBAT_TOGGLE_COOLDOWN = 40L;
 
     public static void onKey(ServerPlayer player, byte key) {
@@ -40,6 +40,10 @@ public class SkillCombatHandler {
             return;
         }
         SkillState state = SkillUtils.state(player);
+        // 大招锁定期间屏蔽技能输入
+        if (state.getUltLockTicks() > 0) {
+            return;
+        }
         switch (key) {
             case 0 -> {
                 long now = player.level().getGameTime();
@@ -50,7 +54,7 @@ public class SkillCombatHandler {
                 state.setCombatMode(entering);
                 state.setCombatCooldownUntil(now + COMBAT_TOGGLE_COOLDOWN);
                 if (entering) {
-                    // 终阶解放：首次进入战斗立即获得三个信号球
+                    // 终阶解放：首次进入战斗获得三个信号球
                     for (int i = 0; i < 3; i++) {
                         state.addOrb(SignalOrb.random(player.getRandom()));
                     }
@@ -75,6 +79,20 @@ public class SkillCombatHandler {
         }
     }
 
+    /** 长按/松开左键，交给技能组处理 */
+    public static void onAttackHold(ServerPlayer player, boolean pressed) {
+        CharacterSkillSet set = SkillSetRegistry.find(player);
+        if (set == null) {
+            return;
+        }
+        SkillState state = SkillUtils.state(player);
+        if (!state.isCombatMode() && pressed) {
+            return;
+        }
+        set.onAttackHold(player, state, pressed);
+        SkillUtils.sync(player);
+    }
+
     @SubscribeEvent
     public void onMeleeDamage(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
@@ -93,6 +111,34 @@ public class SkillCombatHandler {
         }
         LivingEntity target = event.getEntity();
         set.onMeleeHit(player, target, event.getNewDamage(), SkillUtils.state(player));
+    }
+
+    /** 霸体：深红之渊闪身/突进期间免疫击退。 */
+    @SubscribeEvent
+    public void onKnockback(net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (SkillUtils.state(player).getSuperArmorTicks() > 0) {
+            event.setCanceled(true);
+        }
+    }
+
+    /** 大招锁定期间禁止左键攻击与挖掘 */
+    @SubscribeEvent
+    public void onAttackEntity(net.neoforged.neoforge.event.entity.player.AttackEntityEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && SkillUtils.state(player).getUltLockTicks() > 0) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onLeftClickBlock(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock event) {
+        if (event.getEntity() instanceof ServerPlayer player
+                && SkillUtils.state(player).getUltLockTicks() > 0) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -116,7 +162,7 @@ public class SkillCombatHandler {
         var container = event.getContainer();
         float dmg = container.getNewDamage();
         if (SkillUtils.ascension(player) >= 3) {
-            dmg *= (1.0f + SSS_PLUS_NORMAL_BONUS);
+            dmg *= (1.0f + set.sssPlusNormalBonus());
         }
         container.setNewDamage(set.modifyNormalAttackDamage(player, state, dmg));
     }
@@ -145,6 +191,19 @@ public class SkillCombatHandler {
             SkillUtils.sync(player);
         }
 
+        SkillUtils.tickScheduled(player);
+
+        // 太刀大招锁定：固定坐标，屏蔽位移
+        SkillState lockState = SkillUtils.state(player);
+        if (lockState.getUltLockTicks() > 0) {
+            lockState.tickUltLock();
+            player.teleportTo(lockState.getUltLockX(), lockState.getUltLockY(), lockState.getUltLockZ());
+            player.setDeltaMovement(0.0, 0.0, 0.0);
+            player.setSprinting(false);
+            player.resetAttackStrengthTicker();
+            player.hurtMarked = true;
+        }
+
         if (set != null) {
             set.onPlayerTick(player, SkillUtils.state(player));
         }
@@ -161,7 +220,7 @@ public class SkillCombatHandler {
         }
     }
 
-    /** 标记该玩家正在造成“非普攻”伤害，避免再次触发普攻相关机制。 */
+    /** 标记该玩家正在造成非普攻伤害，防止再次触发普攻机制 */
     public static boolean beginBonus(ServerPlayer player) {
         return BONUS_PROCESSING.add(player.getUUID());
     }
@@ -184,6 +243,7 @@ public class SkillCombatHandler {
             if (set != null) {
                 dmg = set.modifySkillDamage(player, SkillUtils.state(player), dmg);
             }
+            dmg *= SkillUpgradeHelper.leapMultiplier(player);
             target.hurt(player.damageSources().playerAttack(player), dmg);
         } finally {
             BONUS_PROCESSING.remove(player.getUUID());
@@ -200,8 +260,27 @@ public class SkillCombatHandler {
             if (set != null) {
                 dmg = set.modifySkillDamage(player, SkillUtils.state(player), dmg);
             }
+            dmg *= SkillUpgradeHelper.leapMultiplier(player);
             DamageSource fire = DamageTypeHelper.createDamageSource(player, IcyDamageTypes.FIRE);
             target.hurt(fire != null ? fire : player.damageSources().onFire(), dmg);
+        } finally {
+            BONUS_PROCESSING.remove(player.getUUID());
+        }
+    }
+
+    public static void dealBonusLightning(ServerPlayer player, LivingEntity target, float ratio) {
+        if (!BONUS_PROCESSING.add(player.getUUID())) {
+            return;
+        }
+        try {
+            float dmg = SkillUtils.attackOf(player) * ratio * CLASS_EXTRA_BONUS;
+            CharacterSkillSet set = SkillSetRegistry.find(player);
+            if (set != null) {
+                dmg = set.modifySkillDamage(player, SkillUtils.state(player), dmg);
+            }
+            dmg *= SkillUpgradeHelper.leapMultiplier(player);
+            DamageSource lightning = DamageTypeHelper.createDamageSource(player, IcyDamageTypes.LIGHT);
+            target.hurt(lightning != null ? lightning : player.damageSources().lightningBolt(), dmg);
         } finally {
             BONUS_PROCESSING.remove(player.getUUID());
         }

@@ -6,6 +6,7 @@ import com.icypunishing.core.AwarenessItem;
 import com.icypunishing.event.AwarenessDropHandler;
 import com.icypunishing.event.AwarenessEffectHandler;
 import com.icypunishing.event.AwarenessStatsHandler;
+import com.icypunishing.event.ProgressionDropHandler;
 import com.icypunishing.event.HyperCalculationSpaceHandler;
 import com.icypunishing.event.SkillCombatHandler;
 import com.icypunishing.registry.ModAttachments;
@@ -30,7 +31,7 @@ import org.slf4j.Logger;
 @Mod(IcyPunishing.MODID)
 public class IcyPunishing {
     public static final String MODID = "icy_punishing";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public IcyPunishing(IEventBus bus, ModContainer modContainer) {
         ModItems.register(bus);
@@ -39,6 +40,7 @@ public class IcyPunishing {
         ModEffects.register(bus);
         ModEntities.register(bus);
         ModAttachments.register(bus);
+        com.icypunishing.recipe.ModRecipes.SERIALIZERS.register(bus);
 
         bus.addListener(this::commonSetup);
 
@@ -49,8 +51,15 @@ public class IcyPunishing {
         NeoForge.EVENT_BUS.register(new AwarenessStatsHandler());
         NeoForge.EVENT_BUS.register(new HyperCalculationSpaceHandler());
         NeoForge.EVENT_BUS.register(new com.icypunishing.event.WeaponSkillHandler());
+        NeoForge.EVENT_BUS.register(new ProgressionDropHandler());
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, IcyPunishingConfig.SPEC, "icy_punishing-common.toml");
+        // 配置文件迁移到 icy/ 子目录，提前创建目录
+        try {
+            java.nio.file.Files.createDirectories(net.neoforged.fml.loading.FMLPaths.CONFIGDIR.get().resolve("icy"));
+        } catch (java.io.IOException e) {
+            LOGGER.warn("Failed to create config subdirectory 'icy'", e);
+        }
+        modContainer.registerConfig(ModConfig.Type.COMMON, IcyPunishingConfig.SPEC, "icy/icy_punishing-common.toml");
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -62,10 +71,27 @@ public class IcyPunishing {
                 }
             });
             registerQualities();
+            registerUpgradeResources();
             SkillSetRegistry.bootstrap();
             LOGGER.info("Icy Punishing v1.0.1 (NeoForge 1.21.1) loaded successfully!");
             LOGGER.info("Awareness slots registered: 6");
         });
+    }
+
+    /** 注册螺母包/经验仓对应的玩家升级资源数值（Shift+左键提交） */
+    private void registerUpgradeResources() {
+        com.icylib.upgrade.PlayerUpgradeItems.registerNutItem(ModItems.NUT_PACK_SMALL.get(), 10000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerNutItem(ModItems.NUT_PACK_MEDIUM.get(), 20000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerNutItem(ModItems.NUT_PACK_LARGE.get(), 50000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerNutItem(ModItems.NUT_PACK_XLARGE.get(), 100000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerNutItem(ModItems.NUT_PACK_XXLARGE.get(), 200000);
+
+        com.icylib.upgrade.PlayerUpgradeItems.registerExpItem(ModItems.EXP_CONTAINER_SMALL.get(), 1000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerExpItem(ModItems.EXP_CONTAINER_MEDIUM.get(), 5000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerExpItem(ModItems.EXP_CONTAINER_LARGE.get(), 20000);
+        com.icylib.upgrade.PlayerUpgradeItems.registerExpItem(ModItems.EXP_CONTAINER_XLARGE.get(), 50000);
+
+        com.icylib.upgrade.PlayerUpgradeItems.registerSkillPointItem(ModItems.SKILL_POINT.get(), 1);
     }
 
     private void registerQualities() {

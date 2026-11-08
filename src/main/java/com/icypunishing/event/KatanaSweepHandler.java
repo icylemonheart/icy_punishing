@@ -16,24 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 太刀左键攻击判定：不再走准星单点射线，而是按挥刀轨迹扫过的刀身区域命中。
- * 一刀对每个被刀身扫到的生物结算一次伤害（服务端权威）。
+ * 太刀左键攻击：按挥刀轨迹扫过的刀身区域判定命中，每个被扫到的生物结算一次伤害。
  */
 public final class KatanaSweepHandler {
 
-    /** 刀身长度（格）：4 格 OBJ 模型经手持缩放后的视觉长度 */
+    /** 刀身长度与碰撞半径（格） */
     private static final double BLADE_LENGTH = 3.0D;
-    /** 刀身碰撞半径（格），容许的接触厚度 */
     private static final double BLADE_RADIUS = 0.35D;
-    /** 手部锚点相对眼睛的前移 / 侧移 / 下移 */
+    /** 手部锚点前移 / 侧移 / 下移 */
     private static final double HAND_FORWARD = 0.35D;
     private static final double HAND_SIDE = 0.35D;
     private static final double HAND_DROP = 0.15D;
-    /** 挥刀弧线：相对视线从斜上劈到斜下 */
+    /** 挥刀弧线：视线斜上劈到斜下 */
     private static final double ARC_START_DEG = 65.0D;
     private static final double ARC_END_DEG = -55.0D;
     private static final int ARC_STEPS = 9;
-    /** 横向偏移，让刀身覆盖身前一条横向带 */
+    /** 横向偏移，覆盖身前一条横带 */
     private static final double[] LATERAL_DEG = {-15.0D, 0.0D, 15.0D};
 
     private KatanaSweepHandler() {
@@ -131,7 +129,7 @@ public final class KatanaSweepHandler {
         return false;
     }
 
-    /** 绕世界 Y 轴旋转，用于让刀身覆盖横向范围 */
+    /** 绕世界 Y 轴旋转，横向扩展刀身覆盖 */
     private static Vec3 rotateY(Vec3 vec, double degrees) {
         double rad = Math.toRadians(degrees);
         double cos = Math.cos(rad);

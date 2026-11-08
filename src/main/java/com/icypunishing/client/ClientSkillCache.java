@@ -18,6 +18,19 @@ public final class ClientSkillCache {
     private static volatile int rageStacks;
     private static volatile int rageTicks;
     private static volatile int dodgeCooldownTicks;
+    private static volatile int dawnBladeTicks;
+    private static volatile int lightningStacks;
+    private static volatile int lightningTicks;
+    private static volatile int ultShadowTicks;
+    private static volatile int dawnExtraTicks;
+    private static volatile int ultEnergyCost;
+    private static volatile int swordAuraTicks;
+    private static volatile int swordStacks;
+    private static volatile int enhanceTicks;
+    private static volatile int enhanceTier;
+    private static volatile int crimsonTicks;
+    private static volatile int orbBuffStacks;
+    private static volatile int ultSwordTicks;
 
     private ClientSkillCache() {
     }
@@ -37,6 +50,19 @@ public final class ClientSkillCache {
         rageStacks = payload.rageStacks();
         rageTicks = payload.rageTicks();
         dodgeCooldownTicks = payload.dodgeCooldownTicks();
+        dawnBladeTicks = payload.dawnBladeTicks();
+        lightningStacks = payload.lightningStacks();
+        lightningTicks = payload.lightningTicks();
+        ultShadowTicks = payload.ultShadowTicks();
+        dawnExtraTicks = payload.dawnExtraTicks();
+        ultEnergyCost = payload.ultEnergyCost();
+        swordAuraTicks = payload.swordAuraTicks();
+        swordStacks = payload.swordStacks();
+        enhanceTicks = payload.enhanceTicks();
+        enhanceTier = payload.enhanceTier();
+        crimsonTicks = payload.crimsonTicks();
+        orbBuffStacks = payload.orbBuffStacks();
+        ultSwordTicks = payload.ultSwordTicks();
     }
 
     public static List<SignalOrb> orbsSnapshot() {
@@ -67,5 +93,58 @@ public final class ClientSkillCache {
 
     public static int dodgeCooldownTicks() {
         return dodgeCooldownTicks;
+    }
+
+    public static int dawnBladeTicks() {
+        return dawnBladeTicks;
+    }
+
+    public static int lightningStacks() {
+        return lightningStacks;
+    }
+
+    public static int lightningTicks() {
+        return lightningTicks;
+    }
+
+    public static int ultShadowTicks() {
+        return ultShadowTicks;
+    }
+
+    public static int dawnExtraTicks() {
+        return dawnExtraTicks;
+    }
+
+    /** 当前武器的必杀能量需求（默认满能量 100）。 */
+    public static int ultEnergyCost() {
+        return ultEnergyCost > 0 ? ultEnergyCost : com.icypunishing.skill.SkillState.MAX_ENERGY;
+    }
+
+    public static int swordAuraTicks() {
+        return swordAuraTicks;
+    }
+
+    public static int swordStacks() {
+        return swordStacks;
+    }
+
+    public static int enhanceTicks() {
+        return enhanceTicks;
+    }
+
+    public static int enhanceTier() {
+        return enhanceTier;
+    }
+
+    public static int crimsonTicks() {
+        return crimsonTicks;
+    }
+
+    public static int orbBuffStacks() {
+        return orbBuffStacks;
+    }
+
+    public static int ultSwordTicks() {
+        return ultSwordTicks;
     }
 }

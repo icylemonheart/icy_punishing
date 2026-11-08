@@ -3,6 +3,7 @@ package com.icypunishing.client;
 import com.icylib.client.upgrade.UpgradeScreenRendererManager;
 import com.icypunishing.client.entity.TianlangBladeRenderer;
 import com.icypunishing.client.obj.ObjKatanaRenderer;
+import com.icypunishing.client.ult.UltPlayerAnimation;
 import com.icypunishing.registry.ModEntities;
 import com.icypunishing.registry.ModItems;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,21 +21,18 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import software.bernie.geckolib.loading.object.BakedModelFactory;
 
 @EventBusSubscriber(modid = "icy_punishing", bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class IcyPunishingClient {
-
-    static {
-        // 注册支持 poly_mesh 的模型工厂，否则只有 poly_mesh 的模型不会产生任何几何体
-        BakedModelFactory.register("icy_punishing", new IcyPunishingModelFactory());
-    }
 
     @SubscribeEvent
     public static void onClientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             UpgradeScreenRendererManager.setRenderer(new UpgradeScreenRenderer());
+            // 大招期间的身体硬转：只作用于渲染矩阵，不改动实体朝向
+            NeoForge.EVENT_BUS.addListener(UltPlayerAnimation::onRenderPlayerPre);
         });
     }
 

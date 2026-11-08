@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "pattern": [
+    "OOO",
+    "OHO",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+      "item": "mut:heterochromatic_amethyst_shard"
+    },
+    "H": {
+      "item": "icy_punishing:hugotou"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:mumei",
+    "count": 1
+  }
+}

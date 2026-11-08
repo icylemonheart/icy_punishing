@@ -8,7 +8,6 @@ import com.icypunishing.core.MaterialItem;
 import com.icypunishing.core.ProximityEffect;
 import com.icypunishing.core.SetEffect;
 import com.icypunishing.core.UpgradeKeyItem;
-import com.icypunishing.item.GeoKatanaItem;
 import com.icypunishing.item.ObjKatanaItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -464,32 +463,27 @@ public class ModItems {
     public static final DeferredHolder<Item, Item> HUMANITY_STANDS_HERE = ITEMS.register("humanity_stands_here",
             () -> new UpgradeKeyItem(new Item.Properties().stacksTo(1)));
 
-    // 制式刀（太刀类）—— 静态 3D 模型
+    // 太刀类（ObjKatanaItem 静态模型）
     public static final DeferredHolder<Item, Item> TACHI = ITEMS.register("tachi",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 8, -2.4F)), "tachi"));
 
-    // 护身刀——短刀，攻速快伤害低
     public static final DeferredHolder<Item, Item> HUGOTOU = ITEMS.register("hugotou",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 5, -2.0F)), "hugotou"));
 
-    // 无铭——标准太刀
     public static final DeferredHolder<Item, Item> MUMEI = ITEMS.register("mumei",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 7, -2.4F)), "mumei"));
 
-    // 九字之定——重型太刀，带机械装置
     public static final DeferredHolder<Item, Item> KYUUJI = ITEMS.register("kyuuji",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 8, -2.6F)), "kyuuji"));
 
-    // 红莲狂士——太刀，带能量核心装置
     public static final DeferredHolder<Item, Item> HONGLIAN = ITEMS.register("honglian",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 9, -2.6F)), "honglian"));
 
-    // 逆元碎片-红莲——红莲狂士专属进阶材料
     public static final DeferredHolder<Item, Item> INVERSE_FRAGMENT_HONGLIAN = ITEMS.register("inverse_fragment_honglian",
             () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
                     Component.translatable("tooltip.icy_punishing.inverse_fragment_honglian.desc")
@@ -498,20 +492,49 @@ public class ModItems {
                     Component.translatable("tooltip.icy_punishing.inverse_fragment_honglian.lore")
                             .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
 
-    // 红樱——太刀，全红刀身
     public static final DeferredHolder<Item, Item> HONGYING = ITEMS.register("hongying",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 8, -2.4F)), "hongying"));
 
-    // 天狼星——太刀，米白刀身
     public static final DeferredHolder<Item, Item> TIANLANG = ITEMS.register("tianlang",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 8, -2.5F)), "tianlang"));
 
-    // 影打-逆断——太刀，带能量线与爪式装置
     public static final DeferredHolder<Item, Item> YINGDA = ITEMS.register("yingda",
             () -> new ObjKatanaItem(new Item.Properties().stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 9, -2.6F)), "yingda"));
+
+    public static final DeferredHolder<Item, Item> INVERSE_FRAGMENT_DAWN = ITEMS.register("inverse_fragment_dawn",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_dawn.desc")
+                            .withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_dawn.lore")
+                            .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
+
+    public static final DeferredHolder<Item, Item> ASCENSION_CHIP_DAWN = ITEMS.register("ascension_chip_dawn",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
+                    Component.translatable("tooltip.icy_punishing.ascension_chip_dawn.desc")
+                            .withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.translatable("tooltip.icy_punishing.ascension_chip_dawn.lore")
+                            .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
+
+    public static final DeferredHolder<Item, Item> INVERSE_FRAGMENT_HONGYING = ITEMS.register("inverse_fragment_hongying",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_hongying.desc")
+                            .withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.translatable("tooltip.icy_punishing.inverse_fragment_hongying.lore")
+                            .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
+
+    public static final DeferredHolder<Item, Item> ASCENSION_CHIP_HONGYING = ITEMS.register("ascension_chip_hongying",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64), List.of(
+                    Component.translatable("tooltip.icy_punishing.ascension_chip_hongying.desc")
+                            .withStyle(ChatFormatting.GRAY),
+                    Component.empty(),
+                    Component.translatable("tooltip.icy_punishing.ascension_chip_hongying.lore")
+                            .withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC))));
 
     // 朱桦——四阶段
     public static final DeferredHolder<Item, Item> ZHUHUA_C1 = ITEMS.register("zhuhua_c1",
@@ -605,7 +628,7 @@ public class ModItems {
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.awareness_circuit_high.desc", "tooltip.icy_punishing.awareness_circuit_high.lore", "tooltip.icy_punishing.awareness_circuit_high.obtain")));
 
-    // 意识强化素材 II/III/IV（tooltip 一致）
+    // 意识强化素材 II/III/IV（共用 tooltip）
     public static final DeferredHolder<Item, Item> AWARENESS_MATERIAL_2 = ITEMS.register("awareness_material_2",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.awareness_material.desc", "tooltip.icy_punishing.awareness_material.lore", "tooltip.icy_punishing.awareness_material.obtain")));
@@ -616,7 +639,7 @@ public class ModItems {
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.awareness_material.desc", "tooltip.icy_punishing.awareness_material.lore", "tooltip.icy_punishing.awareness_material.obtain")));
 
-    // 武器强化素材 II/III/IV（tooltip 一致）
+    // 武器强化素材 II/III/IV（共用 tooltip）
     public static final DeferredHolder<Item, Item> WEAPON_MATERIAL_2 = ITEMS.register("weapon_material_2",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.weapon_material.desc", "tooltip.icy_punishing.weapon_material.lore", "tooltip.icy_punishing.weapon_material.obtain")));
@@ -640,7 +663,7 @@ public class ModItems {
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.compute_fragment.desc", "tooltip.icy_punishing.compute_fragment.lore", "tooltip.icy_punishing.compute_fragment.obtain")));
 
-    // 经验仓·小/中/大/特大（背景故事与获取方法一致，仅描述中经验量不同）
+    // 经验仓·小/中/大/特大
     public static final DeferredHolder<Item, Item> EXP_CONTAINER_SMALL = ITEMS.register("exp_container_small",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.exp_container_small.desc", "tooltip.icy_punishing.exp_container.lore", "tooltip.icy_punishing.exp_container.obtain")));
@@ -654,22 +677,27 @@ public class ModItems {
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
                     materialTooltip("tooltip.icy_punishing.exp_container_xlarge.desc", "tooltip.icy_punishing.exp_container.lore", "tooltip.icy_punishing.exp_container.obtain")));
 
-    // 螺母包·小/中/大/特大/超大（tooltip 一致，不含"使用后可获得10000螺母"）
+    // 螺母包·小/中/大/特大/超大（Shift+左键提交为升级货币）
     public static final DeferredHolder<Item, Item> NUT_PACK_SMALL = ITEMS.register("nut_pack_small",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
-                    materialTooltipNoDesc("tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+                    materialTooltip("tooltip.icy_punishing.nut_pack_small.desc", "tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
     public static final DeferredHolder<Item, Item> NUT_PACK_MEDIUM = ITEMS.register("nut_pack_medium",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
-                    materialTooltipNoDesc("tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+                    materialTooltip("tooltip.icy_punishing.nut_pack_medium.desc", "tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
     public static final DeferredHolder<Item, Item> NUT_PACK_LARGE = ITEMS.register("nut_pack_large",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
-                    materialTooltipNoDesc("tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+                    materialTooltip("tooltip.icy_punishing.nut_pack_large.desc", "tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
     public static final DeferredHolder<Item, Item> NUT_PACK_XLARGE = ITEMS.register("nut_pack_xlarge",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
-                    materialTooltipNoDesc("tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+                    materialTooltip("tooltip.icy_punishing.nut_pack_xlarge.desc", "tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
     public static final DeferredHolder<Item, Item> NUT_PACK_XXLARGE = ITEMS.register("nut_pack_xxlarge",
             () -> new MaterialItem(new Item.Properties().stacksTo(64),
-                    materialTooltipNoDesc("tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+                    materialTooltip("tooltip.icy_punishing.nut_pack_xxlarge.desc", "tooltip.icy_punishing.nut_pack.lore", "tooltip.icy_punishing.nut_pack.obtain")));
+
+    // 技能点——放入强化界面中央槽位提交，用于专属武器技能升级
+    public static final DeferredHolder<Item, Item> SKILL_POINT = ITEMS.register("skill_point",
+            () -> new MaterialItem(new Item.Properties().stacksTo(64),
+                    materialTooltip("tooltip.icy_punishing.skill_point.desc", "tooltip.icy_punishing.skill_point.lore", "tooltip.icy_punishing.skill_point.obtain")));
 
     private static AwarenessSet create2StarSet(String name, AwarenessStats stats) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(IcyPunishing.MODID, name);
@@ -730,9 +758,7 @@ public class ModItems {
         return set;
     }
 
-    /**
-     * 构建材料物品 tooltip：描述行、空行、背景故事行、空行、获取方法行。
-     */
+    /** 材料 tooltip：描述、空行、背景故事、空行、获取方法。 */
     private static List<Component> materialTooltip(String descKey, String loreKey, String obtainKey) {
         return List.of(
                 Component.translatable(descKey).withStyle(ChatFormatting.GRAY),
@@ -743,9 +769,7 @@ public class ModItems {
         );
     }
 
-    /**
-     * 构建不含描述行的材料 tooltip（用于螺母包等去掉首行描述的物品）。
-     */
+    /** 不含描述行的材料 tooltip（螺母包等使用）。 */
     private static List<Component> materialTooltipNoDesc(String loreKey, String obtainKey) {
         return List.of(
                 Component.translatable(loreKey).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC),

@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
@@ -27,12 +28,12 @@ public class ChargeHUD {
         int yOffset = 0;
 
         if (ferietCharges != null && ferietCharges > 0) {
-            renderChargeBar(event, "费列特", ferietCharges, 5, yOffset);
+            renderChargeBar(event, Component.translatable("hud.icy_punishing.charge.feriet").getString(), ferietCharges, 5, yOffset);
             yOffset += 20;
         }
 
         if (guineyCharges != null && guineyCharges > 0) {
-            renderChargeBar(event, "桂尼", guineyCharges, 5, yOffset);
+            renderChargeBar(event, Component.translatable("hud.icy_punishing.charge.guiney").getString(), guineyCharges, 5, yOffset);
         }
     }
 

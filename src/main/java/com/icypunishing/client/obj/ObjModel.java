@@ -15,9 +15,7 @@ import java.util.Map;
 
 /**
  * 极简 OBJ 加载器：支持 v / vt / vn / f / g，按 g 分组存面。
- * 顶点存原始数据，建 Face 时按分组归一化：
- * - item_blade：物品栏平面图标，缩到 0.9 格
- * - 其他（blade / blade_luminous）：绕 Z -90° 立起，总长 3 格
+ * item_blade 缩到 0.9 格；blade / blade_luminous 绕 Z -90° 立起、总长 4 格。
  */
 public class ObjModel {
 

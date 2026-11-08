@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "ingredients": [
+    {
+      "item": "icy_punishing:kyuuji"
+    },
+    {
+      "item": "mut:uncanny_amethyst_star"
+    }
+  ],
+  "result": {
+    "id": "icy_punishing:hongying",
+    "count": 1
+  }
+}

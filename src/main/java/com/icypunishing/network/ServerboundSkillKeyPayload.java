@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** C2S：客户端按下技能键，交由 SkillCombatHandler 结算。 */
 public record ServerboundSkillKeyPayload(byte key) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ServerboundSkillKeyPayload> TYPE =

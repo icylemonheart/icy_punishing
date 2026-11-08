@@ -10,8 +10,11 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,26 @@ public class TianlangBladeRenderer extends EntityRenderer<TianlangBladeEntity> {
             return;
         }
         pose.pushPose();
+        // 客户端逐帧用主人的插值位置/朝向重新计算环绕位置，避免网络 3 tick 同步造成的抽动
+        Entity owner = entity.level().isClientSide()
+                ? entity.level().getEntity(entity.getOwnerEntityId()) : null;
+        if (owner != null) {
+            float ownerYaw = Mth.rotLerp(partialTick, owner.yRotO, owner.getYRot());
+            Vec3 ownerPos = owner.getPosition(partialTick);
+            double yawRad = Math.toRadians(ownerYaw);
+            Vec3 back = new Vec3(Math.sin(yawRad), 0.0, -Math.cos(yawRad));
+            Vec3 left = new Vec3(Math.cos(yawRad), 0.0, Math.sin(yawRad));
+            double bob = Math.sin((owner.tickCount + partialTick) * 0.08) * 0.08;
+            Vec3 target = ownerPos
+                    .add(back.scale(TianlangBladeEntity.BACK_OFFSET))
+                    .add(left.scale(TianlangBladeEntity.LEFT_OFFSET))
+                    .add(0.0, TianlangBladeEntity.HEIGHT + bob, 0.0);
+            Vec3 current = entity.getPosition(partialTick);
+            // 抵消实体自身朝向 → 平移到主人身上的目标点 → 套用主人朝向
+            pose.mulPose(Axis.YP.rotationDegrees(entityYaw));
+            pose.translate(target.x - current.x, target.y - current.y, target.z - current.z);
+            pose.mulPose(Axis.YP.rotationDegrees(ownerYaw));
+        }
         // 实体渲染时 pose 已按实体朝向旋转，局部 +Z 即前方；下一层把刀身长轴摆平
         switch (longAxis) {
             case 0 -> pose.mulPose(Axis.YP.rotationDegrees(-90.0f));

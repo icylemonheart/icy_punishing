@@ -28,6 +28,6 @@ public class UpgradeKeyItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.literal("右键打开升级与突破界面").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(Component.translatable("tooltip.icy_punishing.upgrade_key").withStyle(ChatFormatting.GRAY));
     }
 }

@@ -24,11 +24,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 无专属角色武器的武器技能。
- *
- * <p>无铭：会心伤害加成（属性修饰符，见 ObjKatanaItem）；
- * 九字之定：攻击 20% 概率落雷，50% 物理伤害，3 秒冷却（此处实现）；
- * 天狼星：副手时悬浮于身后，自动攻击周围敌对生物，优先玩家当前目标（此处实现）。</p>
+ * 无专属角色武器的武器技能：九字之定落雷、天狼星副手悬浮攻击。
+ * 无铭的会心伤害加成由 ObjKatanaItem 的属性修饰符实现。
  */
 public class WeaponSkillHandler {
 
@@ -43,13 +40,13 @@ public class WeaponSkillHandler {
     private static final int TIANLANG_INTERVAL_TICKS = 20;
     private static final float TIANLANG_RATIO = 1.00f;
 
-    /** 每名玩家当前普攻目标的 UUID（用于天狼星优先攻击）。 */
+    /** 玩家当前普攻目标，用于天狼星优先攻击 */
     private final Map<UUID, UUID> attackTargets = new ConcurrentHashMap<>();
     private final Map<UUID, Long> lightningCooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, Long> tianlangCooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, TianlangBladeEntity> blades = new ConcurrentHashMap<>();
 
-    /** 玩家用某把武器造成普攻伤害后记录目标，并处理九字之定的落雷。 */
+    /** 记录普攻目标，并处理九字之定的落雷 */
     @SubscribeEvent
     public void onLivingDamage(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
@@ -80,7 +77,7 @@ public class WeaponSkillHandler {
         strikeLightning(player, target);
     }
 
-    /** 九字之定落雷：只做视觉，不点燃、不破坏掉落物，伤害单独结算。 */
+    /** 九字之定落雷：仅视觉，不点燃、不破坏方块，伤害单独结算 */
     private void strikeLightning(ServerPlayer player, LivingEntity target) {
         ServerLevel level = player.serverLevel();
         LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
@@ -91,7 +88,7 @@ public class WeaponSkillHandler {
         }
         level.playSound(null, target.blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER,
                 SoundSource.PLAYERS, 0.8f, 1.4f);
-        // 竖直雷柱 + 地面冲击波
+        // 竖直雷柱 + 地面冲击波特效
         SkillUtils.sendVfx(player, (byte) 7, target.getX(), target.getY(), target.getZ(),
                 0.0f, 3.0f, 0.9f, 0xFFE98A, 420);
         SkillUtils.sendVfx(player, (byte) 8, target.getX(), target.getY() + 0.1, target.getZ(),
@@ -107,7 +104,7 @@ public class WeaponSkillHandler {
         }
     }
 
-    /** 天狼星：副手持有时自动攻击。 */
+    /** 天狼星：副手持有时自动攻击 */
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
@@ -141,7 +138,7 @@ public class WeaponSkillHandler {
         }
     }
 
-    /** 保证天狼星悬浮体存在。 */
+    /** 确保天狼星悬浮体存在 */
     private void ensureBlade(ServerPlayer player) {
         TianlangBladeEntity blade = blades.get(player.getUUID());
         if (blade != null && blade.isAlive() && blade.level() == player.level()) {
@@ -149,6 +146,7 @@ public class WeaponSkillHandler {
         }
         TianlangBladeEntity spawned = new TianlangBladeEntity(ModEntities.TIANLANG_BLADE.get(), player.serverLevel());
         spawned.setOwnerId(player.getUUID());
+        spawned.setOwnerEntity(player.getId());
         spawned.setDisplayStack(player.getOffhandItem().copy());
         spawned.moveTo(player.position());
         player.serverLevel().addFreshEntity(spawned);
@@ -163,7 +161,7 @@ public class WeaponSkillHandler {
     }
 
     private LivingEntity findTarget(ServerPlayer player) {
-        // 优先玩家正在攻击的目标：敌对、中立、友善都算
+        // 优先玩家当前目标；否则取最近的敌对生物
         UUID lastTarget = attackTargets.get(player.getUUID());
         if (lastTarget != null) {
             var entity = player.serverLevel().getEntity(lastTarget);
@@ -201,7 +199,7 @@ public class WeaponSkillHandler {
         return stack.getItem() instanceof ObjKatanaItem katana && modelId.equals(katana.getModelId());
     }
 
-    /** 下线时清理脏数据。 */
+    /** 下线时清理缓存 */
     @SubscribeEvent
     public void onPlayerLoggedOut(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event) {
         UUID id = event.getEntity().getUUID();

@@ -4,6 +4,16 @@
       "type": "directory",
       "source": "gui/sprites/honglian",
       "prefix": "honglian/"
+    },
+    {
+      "type": "directory",
+      "source": "gui/sprites/yingda",
+      "prefix": "yingda/"
+    },
+    {
+      "type": "directory",
+      "source": "gui/sprites/hongying",
+      "prefix": "hongying/"
     }
   ]
 }

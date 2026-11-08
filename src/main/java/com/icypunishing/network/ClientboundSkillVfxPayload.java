@@ -7,10 +7,11 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+/** S2C：通知客户端在指定位置生成一次技能特效。 */
 public record ClientboundSkillVfxPayload(byte shape, byte style, float x, float y, float z,
                                          float yaw, float pitch,
                                          float radius, float thickness,
-                                         int color, int lifeMillis)
+                                         int color, int lifeMillis, int followId)
         implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ClientboundSkillVfxPayload> TYPE =
@@ -24,7 +25,7 @@ public record ClientboundSkillVfxPayload(byte shape, byte style, float x, float 
                 buf.readFloat(), buf.readFloat(), buf.readFloat(),
                 buf.readFloat(), buf.readFloat(),
                 buf.readFloat(), buf.readFloat(),
-                buf.readInt(), buf.readVarInt());
+                buf.readInt(), buf.readVarInt(), buf.readInt());
     }
 
     private void write(FriendlyByteBuf buf) {
@@ -39,6 +40,7 @@ public record ClientboundSkillVfxPayload(byte shape, byte style, float x, float 
         buf.writeFloat(thickness);
         buf.writeInt(color);
         buf.writeVarInt(lifeMillis);
+        buf.writeInt(followId);
     }
 
     @Override

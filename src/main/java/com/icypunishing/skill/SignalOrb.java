@@ -5,7 +5,9 @@ import net.minecraft.util.RandomSource;
 public enum SignalOrb {
     RED(0, 0xE74856),
     YELLOW(1, 0xF0C060),
-    BLUE(2, 0x3E8FFF);
+    BLUE(2, 0x3E8FFF),
+    /** 剑气球：深红之渊剑气状态下的特殊球。 */
+    SWORD(3, 0xFF3A55);
 
     public final int id;
     public final int color;
@@ -19,7 +21,9 @@ public enum SignalOrb {
         return switch (id) {
             case 0 -> RED;
             case 1 -> YELLOW;
-            default -> BLUE;
+            case 2 -> BLUE;
+            case 3 -> SWORD;
+            default -> RED;
         };
     }
 

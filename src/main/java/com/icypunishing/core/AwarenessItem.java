@@ -159,7 +159,7 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
         return base;
     }
 
-    // ICurioItem 接口实现 - 1.21.1 中直接在 Item 上实现，不再需要 initCapabilities
+    // 1.21.1 中 ICurioItem 直接在 Item 上实现，无需 initCapabilities
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         set.tickEffects(slotContext.entity());
@@ -230,14 +230,14 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
             int criticalStrike = getCriticalStrike(stack);
 
             if (health > 0) {
-                Component healthText = Component.literal("生命: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+                Component healthText = Component.translatable("tooltip.icy_punishing.label.health").withStyle(net.minecraft.ChatFormatting.GRAY)
                         .append(Component.literal(String.format("%d", health)).withStyle(net.minecraft.ChatFormatting.RED))
                         .append(Component.literal(" (" + String.format("%d", initialHealth) + "-" + String.format("%d", maxHealth) + ")").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
                 tooltipComponents.add(healthText);
             }
 
             if (criticalStrike > 0) {
-                Component criticalText = Component.literal("会心: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+                Component criticalText = Component.translatable("tooltip.icy_punishing.label.crit").withStyle(net.minecraft.ChatFormatting.GRAY)
                         .append(Component.literal(String.format("%d", criticalStrike)).withStyle(net.minecraft.ChatFormatting.GOLD))
                         .append(Component.literal(" (" + String.format("%d", initialCriticalStrike) + "-" + String.format("%d", maxCriticalStrike) + ")").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
                 tooltipComponents.add(criticalText);
@@ -247,13 +247,13 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
             int defense = getDefense(stack);
 
             if (attack > 0) {
-                Component attackText = Component.literal("攻击: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+                Component attackText = Component.translatable("tooltip.icy_punishing.label.attack").withStyle(net.minecraft.ChatFormatting.GRAY)
                         .append(Component.literal(String.format("%d", attack)).withStyle(net.minecraft.ChatFormatting.RED))
                         .append(Component.literal(" (" + String.format("%d", initialAttack) + "-" + String.format("%d", maxAttack) + ")").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
                 tooltipComponents.add(attackText);
             }
             if (defense > 0) {
-                Component defenseText = Component.literal("防御: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+                Component defenseText = Component.translatable("tooltip.icy_punishing.label.defense").withStyle(net.minecraft.ChatFormatting.GRAY)
                         .append(Component.literal(String.format("%d", defense)).withStyle(net.minecraft.ChatFormatting.BLUE))
                         .append(Component.literal(" (" + String.format("%d", initialDefense) + "-" + String.format("%d", maxDefense) + ")").withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
                 tooltipComponents.add(defenseText);
@@ -266,12 +266,12 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
             int maxLevelForStage = AwarenessUpgradeManager.getMaxLevel(currentStage, rank);
             int maxStage = AwarenessUpgradeManager.getMaxStage(rank);
 
-            Component stageText = Component.literal("阶段: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+            Component stageText = Component.translatable("tooltip.icy_punishing.label.stage").withStyle(net.minecraft.ChatFormatting.GRAY)
                     .append(Component.literal(Integer.toString(currentStage)).withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE))
                     .append(Component.literal("/" + maxStage).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
             tooltipComponents.add(stageText);
 
-            Component levelText = Component.literal("等级: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+            Component levelText = Component.translatable("tooltip.icy_punishing.label.level").withStyle(net.minecraft.ChatFormatting.GRAY)
                     .append(Component.literal(Integer.toString(currentLevel)).withStyle(net.minecraft.ChatFormatting.GREEN))
                     .append(Component.literal("/" + maxLevelForStage).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
             tooltipComponents.add(levelText);
@@ -281,12 +281,12 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
             int maxLevelForStage = AwarenessUpgradeManager.getMaxLevel(defaultStage, rank);
             int maxStage = AwarenessUpgradeManager.getMaxStage(rank);
 
-            Component stageText = Component.literal("阶段: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+            Component stageText = Component.translatable("tooltip.icy_punishing.label.stage").withStyle(net.minecraft.ChatFormatting.GRAY)
                     .append(Component.literal(Integer.toString(defaultStage)).withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE))
                     .append(Component.literal("/" + maxStage).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
             tooltipComponents.add(stageText);
 
-            Component levelText = Component.literal("等级: ").withStyle(net.minecraft.ChatFormatting.GRAY)
+            Component levelText = Component.translatable("tooltip.icy_punishing.label.level").withStyle(net.minecraft.ChatFormatting.GRAY)
                     .append(Component.literal(Integer.toString(defaultLevel)).withStyle(net.minecraft.ChatFormatting.GREEN))
                     .append(Component.literal("/" + maxLevelForStage).withStyle(net.minecraft.ChatFormatting.DARK_GRAY));
             tooltipComponents.add(levelText);
@@ -494,14 +494,42 @@ public class AwarenessItem extends Item implements IPortraitProvider, IUpgradeab
             return newStats;
         });
 
-        boolean success = AwarenessUpgradeManager.tryUpgrade(stats, player, getAttributeGrowthFunctions());
-
-        if (success) {
-            setUpgradeStats(stack, stats);
-            syncAttributesToTag(stack, stats);
+        // 升级只消耗强化素材（UpgradeMenu 中已扣除），不消耗经验
+        if (!AwarenessUpgradeManager.canUpgrade(stats)) {
+            return false;
         }
+        stats.level++;
+        stats.exp = 0;
+        BiFunction<AwarenessUpgradeStats, Integer, Double>[] growthFunctions = getAttributeGrowthFunctions();
+        if (growthFunctions != null) {
+            for (int i = 0; i < stats.attributes.size() && i < growthFunctions.length; i++) {
+                double growth = growthFunctions[i].apply(stats, stats.level);
+                stats.attributes.get(i).addValue(growth);
+            }
+        }
+        setUpgradeStats(stack, stats);
+        syncAttributesToTag(stack, stats);
+        return true;
+    }
 
-        return success;
+    @Override
+    public boolean upgradeWithMaterials() {
+        return true;
+    }
+
+    @Override
+    public List<ItemStack> getUpgradeMaterials(ItemStack stack) {
+        return getUpgradeStats(stack)
+                .filter(AwarenessUpgradeManager::canUpgrade)
+                .map(stats -> switch (getRank()) {
+                    case 2 -> List.of(new ItemStack(ModItems.AWARENESS_MATERIAL_2.get(), 1));
+                    case 3 -> List.of(new ItemStack(ModItems.AWARENESS_MATERIAL_2.get(), 2));
+                    case 4 -> List.of(new ItemStack(ModItems.AWARENESS_MATERIAL_3.get(), 2));
+                    case 5 -> List.of(new ItemStack(ModItems.AWARENESS_MATERIAL_3.get(), 3));
+                    case 6 -> List.of(new ItemStack(ModItems.AWARENESS_MATERIAL_4.get(), 2));
+                    default -> List.<ItemStack>of();
+                })
+                .orElse(List.of());
     }
 
     @Override

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NDN",
+    "DCD",
+    "NDN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "icy_punishing:weapon_breakthrough_core_low"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:weapon_breakthrough_core_high",
+    "count": 1
+  }
+}

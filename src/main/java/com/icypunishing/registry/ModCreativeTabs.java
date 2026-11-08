@@ -212,6 +212,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.NUT_PACK_LARGE.get());
                         output.accept(ModItems.NUT_PACK_XLARGE.get());
                         output.accept(ModItems.NUT_PACK_XXLARGE.get());
+                        output.accept(ModItems.SKILL_POINT.get());
                         output.accept(ModItems.COMPUTE_FRAGMENT.get());
 
                         output.accept(ModItems.BREAKTHROUGH_ALLOY_LOW.get());
@@ -258,8 +259,12 @@ public class ModCreativeTabs {
                         output.accept(ModItems.HONGLIAN.get());
                         output.accept(ModItems.INVERSE_FRAGMENT_HONGLIAN.get());
                         output.accept(ModItems.HONGYING.get());
+                        output.accept(ModItems.INVERSE_FRAGMENT_HONGYING.get());
+                        output.accept(ModItems.ASCENSION_CHIP_HONGYING.get());
                         output.accept(ModItems.TIANLANG.get());
                         output.accept(ModItems.YINGDA.get());
+                        output.accept(ModItems.INVERSE_FRAGMENT_DAWN.get());
+                        output.accept(ModItems.ASCENSION_CHIP_DAWN.get());
                         output.accept(ModItems.ZHUHUA_C1.get());
                         output.accept(ModItems.ZHUHUA_C2.get());
                         output.accept(ModItems.ZHUHUA_C3.get());

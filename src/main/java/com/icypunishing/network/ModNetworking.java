@@ -16,9 +16,15 @@ public class ModNetworking {
                 ServerboundSkillKeyPayload::handle);
         registrar.playToServer(ServerboundKatanaSwingPayload.TYPE, ServerboundKatanaSwingPayload.STREAM_CODEC,
                 ServerboundKatanaSwingPayload::handle);
+        registrar.playToServer(ServerboundKatanaHoldPayload.TYPE, ServerboundKatanaHoldPayload.STREAM_CODEC,
+                ServerboundKatanaHoldPayload::handle);
         registrar.playToClient(ClientboundSkillStatePayload.TYPE, ClientboundSkillStatePayload.STREAM_CODEC,
                 ClientboundSkillStatePayload::handle);
         registrar.playToClient(ClientboundSkillVfxPayload.TYPE, ClientboundSkillVfxPayload.STREAM_CODEC,
                 ClientboundSkillVfxPayload::handle);
+        registrar.playToClient(ClientboundUltTrailPayload.TYPE, ClientboundUltTrailPayload.STREAM_CODEC,
+                ClientboundUltTrailPayload::handle);
+        registrar.playToClient(ClientboundUltStartPayload.TYPE, ClientboundUltStartPayload.STREAM_CODEC,
+                ClientboundUltStartPayload::handle);
     }
 }

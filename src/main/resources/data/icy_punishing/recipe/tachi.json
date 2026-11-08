@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "mut"
+    }
+  ],
+  "pattern": [
+    "SSS",
+    "OOO",
+    "OOO"
+  ],
+  "key": {
+    "S": {
+      "item": "mut:advanced_steel_sword"
+    },
+    "O": {
+      "item": "mut:obsidian_ingot"
+    }
+  },
+  "result": {
+    "id": "icy_punishing:tachi",
+    "count": 1
+  }
+}

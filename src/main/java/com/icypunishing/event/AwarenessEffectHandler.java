@@ -134,6 +134,7 @@ public class AwarenessEffectHandler {
                 int count = equippedSet.countEquipped(player);
                 
                 if (isVanillaCrit) {
+                    // 爱迪生：暴伤叠加（2）/5s 增伤计时（4）
                     if (equippedSet.getId().getPath().equals("edison")) {
                         if (count >= 2) {
                             var addAttr = player.getAttribute(ModAttributes.CRITICAL_STRIKE_MULTIPLIER_ADD);
@@ -146,6 +147,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 尼米兹 4件套：暴击伤害倍率 ×1.05
                     if (equippedSet.getId().getPath().equals("nimitiz")) {
                         if (count >= 4) {
                             var multAttr = player.getAttribute(ModAttributes.CRITICAL_STRIKE_MULTIPLIER_MULTIPLY);
@@ -155,6 +157,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 黎塞留 4件套：累计 8 次暴击
                     if (equippedSet.getId().getPath().equals("richelieu")) {
                         if (count >= 4) {
                             int critCooldown = richelieuCritCooldown.getOrDefault(player, 0);
@@ -170,6 +173,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 达尔文：暴击叠层（2）/记录暴击类型（4）
                     if (equippedSet.getId().getPath().equals("darwin")) {
                         if (count >= 2) {
                             int stacks = darwinCritStacks.getOrDefault(player, 0);
@@ -183,6 +187,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 凯瑟琳 2件套：暴击削减目标物抗
                     if (equippedSet.getId().getPath().equals("catherine")) {
                         if (count >= 2) {
                             Entity targetEntity = event.getTarget();
@@ -203,6 +208,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                 } else {
+                    // 达尔文 4件套：记录冰系暴击类型
                     if (equippedSet.getId().getPath().equals("darwin")) {
                         if (count >= 2) {
                             int stacks = darwinCritStacks.getOrDefault(player, 0);
@@ -216,6 +222,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 艾芙：暴击叠层（2）/5 层触发超算（4）
                     if (equippedSet.getId().getPath().equals("aifu")) {
                         if (count >= 2) {
                             int stacks = aifuCritStacks.getOrDefault(player, 0);
@@ -237,6 +244,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 汉娜 4件套：暴击触发超算
                     if (equippedSet.getId().getPath().equals("hanna")) {
                         if (count >= 4) {
                             if (hannaNextCritHyperSpace.getOrDefault(player, false)) {
@@ -261,24 +269,28 @@ public class AwarenessEffectHandler {
             for (AwarenessSet equippedSet : equippedSets) {
                 int count = equippedSet.countEquipped(player);
                 
+                // 居里·科赫特 2件套：火炮支援
                 if (equippedSet.getId().getPath().equals("curie_cohet")) {
                     if (count >= 2) {
                         tryCallArtillery(player, target);
                     }
                 }
                 
+                // 坎宁安 4件套：攻击后获得格挡
                 if (equippedSet.getId().getPath().equals("cunningham")) {
                     if (count >= 4) {
                         handleCunninghamShield(player);
                     }
                 }
                 
+                // 阿基米德 4件套：蓄力计时
                 if (equippedSet.getId().getPath().equals("archimedes")) {
                     if (count >= 4) {
                         handleArchimedes(player);
                     }
                 }
                 
+                // 伏尔泰 2件套：降低目标防御
                 if (equippedSet.getId().getPath().equals("voltaire")) {
                     if (count >= 2) {
                         int cooldown = voltaireCooldown.getOrDefault(player, 0);
@@ -293,6 +305,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 戈罗达 2件套：降低目标元素抗
                 if (equippedSet.getId().getPath().equals("goroda")) {
                     if (count >= 2) {
                         int cooldown = gorodaCooldown.getOrDefault(player, 0);
@@ -307,6 +320,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 爱因斯坦娜 2件套：按伤害元素降低对应抗性
                 if (equippedSet.getId().getPath().equals("einsteinna")) {
                     if (count >= 2) {
                         int cooldown = einsteinnaMinionCooldown.getOrDefault(player, 0);
@@ -339,6 +353,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 坎特琳娜 4件套：概率获得狂暴
                 if (equippedSet.getId().getPath().equals("kantlina")) {
                     if (count >= 4) {
                         int cooldown = kantlinaRageCooldown.getOrDefault(player, 0);
@@ -350,6 +365,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 莎士比亚 4件套：灼烧
                 if (equippedSet.getId().getPath().equals("shakespeare")) {
                     if (count >= 4) {
                         int cooldown = shakespeareScorchingCooldown.getOrDefault(player, 0);
@@ -362,6 +378,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 海森堡 4件套：电击
                 if (equippedSet.getId().getPath().equals("heisenberg")) {
                     if (count >= 4) {
                         int cooldown = heisenbergElectrocutionCooldown.getOrDefault(player, 0);
@@ -374,12 +391,14 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 达尔文 4件套：确保伤害类型集合存在
                 if (equippedSet.getId().getPath().equals("darwin")) {
                     if (count >= 4) {
                         Set<String> types = darwinDamageTypes.computeIfAbsent(player, k -> new HashSet<>());
                     }
                 }
                 
+                // 凯瑟琳 2件套：攻击削减目标物抗
                 if (equippedSet.getId().getPath().equals("catherine")) {
                     if (count >= 2) {
                         int cooldown = catherineResistCooldown.getOrDefault(player, 0);
@@ -395,6 +414,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 巴顿 4件套：穿甲
                 if (equippedSet.getId().getPath().equals("patton")) {
                     if (count >= 4) {
                         int cooldown = pattonPiercingCooldown.getOrDefault(player, 0);
@@ -407,6 +427,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 巴西隆 4件套：腐蚀
                 if (equippedSet.getId().getPath().equals("basilone")) {
                     if (count >= 4) {
                         int cooldown = basiloneCorrosionCooldown.getOrDefault(player, 0);
@@ -419,6 +440,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 达芬奇 4件套：召唤物集火目标
                 if (equippedSet.getId().getPath().equals("da_vinci")) {
                     if (count >= 4) {
                         net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(
@@ -460,6 +482,7 @@ public class AwarenessEffectHandler {
                 for (AwarenessSet equippedSet : equippedSets) {
                     int count = equippedSet.countEquipped(player);
                     
+                    // 爱迪生 4件套：暴击后增伤
                     if (equippedSet.getId().getPath().equals("edison")) {
                         if (count >= 4) {
                             if (edisonCritTimer.getOrDefault(player, 0) > 0) {
@@ -468,6 +491,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 坎宁安 2件套：对坚韧目标增伤
                     if (equippedSet.getId().getPath().equals("cunningham")) {
                         if (count >= 2) {
                             if (target.hasEffect(com.icypunishing.registry.ModEffects.FORTITUDE)) {
@@ -479,6 +503,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 爱丽丝 4件套：治疗后增伤
                     if (equippedSet.getId().getPath().equals("alice")) {
                         if (count >= 4) {
                             if (aliceBuffTimer.getOrDefault(player, 0) > 0) {
@@ -487,6 +512,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 阿基米德：常驻增伤（2）/蓄力后增伤（4）
                     if (equippedSet.getId().getPath().equals("archimedes")) {
                         if (count >= 2) {
                             damage *= 1.05f;
@@ -500,6 +526,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 艾芙 2件套：每层暴击 +2% 伤害
                     if (equippedSet.getId().getPath().equals("aifu")) {
                         if (count >= 2) {
                             int stacks = aifuCritStacks.getOrDefault(player, 0);
@@ -507,6 +534,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 艾克：元素增伤（2）/概率元素追伤（4）
                     if (equippedSet.getId().getPath().equals("aike")) {
                         if (count >= 2) {
                             damage *= 1.02f;
@@ -528,6 +556,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 黎塞留：物理增伤（2）/满 8 层追伤（4）
                     if (equippedSet.getId().getPath().equals("richelieu")) {
                         if (count >= 2) {
                             if (richelieuDamageBuffTimer.getOrDefault(player, 0) > 0 && DamageTypeHelper.isPhysicalDamage(event.getContainer().getSource())) {
@@ -543,6 +572,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 莫扎特 2件套：超算空间内增伤 15%
                     if (equippedSet.getId().getPath().equals("mozart")) {
                         if (count >= 2) {
                             if (player.hasEffect(com.icypunishing.registry.ModEffects.HYPER_CALCULATION_SPACE)) {
@@ -551,6 +581,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 布狄卡 6件套：叠层增伤
                     if (equippedSet.getId().getPath().equals("boudica")) {
                         if (count >= 6) {
                             int stacks = boudicaStacks.getOrDefault(player, 0);
@@ -558,12 +589,14 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 爱因斯坦娜 2件套：增伤 5%
                     if (equippedSet.getId().getPath().equals("einsteinna")) {
                         if (count >= 2) {
                             damage *= 1.05f;
                         }
                     }
                     
+                    // 吉尼 2件套：元素伤害增伤
                     if (equippedSet.getId().getPath().equals("guiney")) {
                         if (count >= 2 && guineyElementalTimer.containsKey(player)) {
                             DamageSource source = event.getContainer().getSource();
@@ -573,6 +606,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 坎特琳娜：增伤（2）/狂暴增伤（4）
                     if (equippedSet.getId().getPath().equals("kantlina")) {
                         if (count >= 2) {
                             damage *= 1.05f;
@@ -584,6 +618,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 莎士比亚：火伤（2）/灼烧引爆（4）
                     if (equippedSet.getId().getPath().equals("shakespeare")) {
                         if (count >= 2) {
                             damage *= 1.03f;
@@ -598,7 +633,7 @@ public class AwarenessEffectHandler {
                                 if (explosionCooldown <= 0 && !shakespeareExplosionProcessing.contains(target.getUUID())) {
                                     shakespeareExplosionProcessing.add(target.getUUID());
                                     float explosionDamage = (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 6.0f;
-                                    // 莎士比亚4件套爆炸：icy_fire火焰伤害，且携带玩家为来源（火系增益/远航星聚爆引爆等攻击链路才能识别）
+                                    // 爆炸需 icy_fire 且带玩家来源，才能吃到火系增益
                                     DamageSource fireSource = DamageTypeHelper.createDamageSource(player, IcyDamageTypes.FIRE);
                                     target.hurt(fireSource != null ? fireSource : player.damageSources().onFire(), explosionDamage);
                                     shakespeareExplosionProcessing.remove(target.getUUID());
@@ -608,6 +643,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 海森堡：光伤（2）/电击引爆（4）
                     if (equippedSet.getId().getPath().equals("heisenberg")) {
                         if (count >= 2) {
                             damage *= 1.03f;
@@ -630,6 +666,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 达尔文：叠层增伤（2）/三类型齐聚触发冲击波（4）
                     if (equippedSet.getId().getPath().equals("darwin")) {
                         if (!darwinShockwaveProcessing.contains(target.getUUID())) {
                             if (count >= 2) {
@@ -657,6 +694,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 巴顿：物理伤（2）/穿甲引爆（4）
                     if (equippedSet.getId().getPath().equals("patton")) {
                         if (count >= 2) {
                             damage *= 1.03f;
@@ -679,6 +717,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 巴西隆：暗伤（2）/腐蚀引爆（4）
                     if (equippedSet.getId().getPath().equals("basilone")) {
                         if (count >= 2) {
                             damage *= 1.03f;
@@ -707,6 +746,7 @@ public class AwarenessEffectHandler {
 
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
+                // 坎宁安 4件套：格挡减伤 30%
                 if (cunninghamShield.getOrDefault(player, false)) {
                     float reducedDamage = event.getNewDamage() * 0.7f;
                     event.setNewDamage(reducedDamage);
@@ -717,6 +757,7 @@ public class AwarenessEffectHandler {
                 for (AwarenessSet equippedSet : equippedSets) {
                     int count = equippedSet.countEquipped(player);
                     
+                    // 凯瑟琳 4件套：受击获得护盾
                     if (equippedSet.getId().getPath().equals("catherine")) {
                         if (count >= 4) {
                             int cooldown = catherineShieldCooldown.getOrDefault(player, 0);
@@ -734,6 +775,7 @@ public class AwarenessEffectHandler {
                 for (AwarenessSet equippedSet : equippedSets) {
                     int count = equippedSet.countEquipped(player);
                     
+                    // 伏尔泰 4件套：受击削减攻击者全抗
                     if (equippedSet.getId().getPath().equals("voltaire")) {
                         if (count >= 4) {
                             net.minecraft.world.entity.Entity attackerEntity = event.getContainer().getSource().getDirectEntity();
@@ -753,6 +795,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 戈罗达 4件套：受击降低周围元素抗
                     if (equippedSet.getId().getPath().equals("goroda")) {
                         if (count >= 4) {
                             net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(
@@ -770,6 +813,7 @@ public class AwarenessEffectHandler {
                         }
                     }
                     
+                    // 爱因斯坦娜 4件套：受击提升自身四抗
                     if (equippedSet.getId().getPath().equals("einsteinna")) {
                         if (count >= 4) {
                             int cooldown = einsteinnaAuraCooldown.getOrDefault(player, 0);
@@ -811,6 +855,7 @@ public class AwarenessEffectHandler {
             for (AwarenessSet equippedSet : equippedSets) {
                 int count = equippedSet.countEquipped(player);
                 
+                // 爱丽丝：治疗加成（2）/治疗后增伤计时（4）
                 if (equippedSet.getId().getPath().equals("alice")) {
                     if (count >= 2) {
                         event.setAmount(event.getAmount() * 1.15f);
@@ -820,6 +865,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 黎塞留 2件套：治疗增强并触发物理增伤
                 if (equippedSet.getId().getPath().equals("richelieu")) {
                     if (count >= 2) {
                         event.setAmount(event.getAmount() * 1.05f);
@@ -831,6 +877,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 萨曼达：治疗加成（2）/治疗触发光环（4）
                 if (equippedSet.getId().getPath().equals("samanda")) {
                     if (count >= 2) {
                         event.setAmount(event.getAmount() * 1.05f);
@@ -844,6 +891,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 弗雷特II：治疗增益（2）/5 次治疗召唤小精灵（4）
                 if (equippedSet.getId().getPath().equals("feriet_ii")) {
                     if (count >= 2) {
                         event.setAmount(event.getAmount() * 1.1f);
@@ -879,6 +927,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 吉尼：治疗增益（2）/5 次治疗召唤小精灵（4）
                 if (equippedSet.getId().getPath().equals("guiney")) {
                     if (count >= 2) {
                         event.setAmount(event.getAmount() * 1.1f);
@@ -953,6 +1002,7 @@ public class AwarenessEffectHandler {
         for (AwarenessSet equippedSet : equippedSets) {
             int count = equippedSet.countEquipped(player);
             
+            // 弗雷特II 4件套：5 次治疗召唤小精灵
             if (equippedSet.getId().getPath().equals("feriet_ii")) {
                 if (count >= 4 && ferietAuraCooldown.getOrDefault(player, 0) <= 0) {
                     int charges = ferietChargeCount.getOrDefault(player, 0);
@@ -971,6 +1021,7 @@ public class AwarenessEffectHandler {
                 }
             }
             
+            // 吉尼 4件套：5 次治疗召唤小精灵
             if (equippedSet.getId().getPath().equals("guiney")) {
                 if (count >= 4 && guineyAuraCooldown.getOrDefault(player, 0) <= 0) {
                     int charges = guineyChargeCount.getOrDefault(player, 0);
@@ -1011,6 +1062,7 @@ public class AwarenessEffectHandler {
             for (AwarenessSet set : equippedSets) {
                 int count = set.countEquipped(player);
                 
+                // 汉娜：暴伤 +25%（2）/暴击率 +10%（4）
                 if (set.getId().getPath().equals("hanna")) {
                     if (count >= 2) {
                         AttributeModifier critMultModifier = new AttributeModifier(
@@ -1033,6 +1085,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 达芬奇：按召唤物数量加攻防，3 个以上给召唤物加攻
                 if (set.getId().getPath().equals("da_vinci")) {
                     net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(
                             player.getX() - 5.5, player.getY() - 5.5, player.getZ() - 5.5,
@@ -1087,6 +1140,7 @@ public class AwarenessEffectHandler {
                 
                 
                 
+                // 弗雷特II：buff 属性（2）/小精灵光环（4）
                 if (set.getId().getPath().equals("feriet_ii")) {
                     if (count >= 2 && ferietBuffTimer.containsKey(player)) {
                         AttributeModifier damageModifier = new AttributeModifier(
@@ -1132,6 +1186,7 @@ public class AwarenessEffectHandler {
                     }
                 }
                 
+                // 吉尼：元素抗性（2）/小精灵光环（4）
                 if (set.getId().getPath().equals("guiney")) {
                     if (count >= 2 && guineyElementalTimer.containsKey(player)) {
                         AttributeModifier fireResist = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("icy_punishing", "guiney_fire_resistance"), 0.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
@@ -1329,6 +1384,7 @@ public class AwarenessEffectHandler {
             if (player.hasEffect(com.icypunishing.registry.ModEffects.HYPER_CALCULATION_SPACE)) {
                 boolean hadHyperSpace = mozartHadHyperSpace.getOrDefault(player, false);
                 
+                // 莫扎特 4件套：进入超算瞬间对周围造成 2 倍攻击魔法伤害
                 if (!hadHyperSpace) {
                     Set<AwarenessSet> sets = getAllEquippedSets(player);
                     for (AwarenessSet set : sets) {
@@ -1353,6 +1409,7 @@ public class AwarenessEffectHandler {
                 
                 Set<AwarenessSet> boudicaSets = getAllEquippedSets(player);
                 for (AwarenessSet set : boudicaSets) {
+                    // 布狄卡 4件套：超算空间内攻速加成
                     if (set.getId().getPath().equals("boudica")) {
                         int count = set.countEquipped(player);
                         if (count >= 4) {
@@ -1755,12 +1812,14 @@ public class AwarenessEffectHandler {
         Set<AwarenessSet> equippedSets = getAllEquippedSets(player);
         for (AwarenessSet equippedSet : equippedSets) {
             int count = equippedSet.countEquipped(player);
+            // 尼米兹 6件套：召唤物伤害 +10%
             if (equippedSet.getId().getPath().equals("nimitiz") && count >= 6) {
                 float damage = event.getNewDamage();
                 damage *= 1.1f;
                 event.setNewDamage(damage);
             }
             
+            // 凯瑟琳 2件套：召唤物伤害削减目标物抗
             if (equippedSet.getId().getPath().equals("catherine") && count >= 2) {
                 int cooldown = catherineResistCooldown.getOrDefault(player, 0);
                 if (cooldown <= 0) {
@@ -1775,6 +1834,7 @@ public class AwarenessEffectHandler {
                 }
             }
             
+            // 达芬奇 4件套：召唤物集火
             if (equippedSet.getId().getPath().equals("da_vinci") && count >= 4) {
                 LivingEntity target = event.getEntity();
                 net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(
@@ -1821,6 +1881,7 @@ public class AwarenessEffectHandler {
             Set<AwarenessSet> equippedSets = getAllEquippedSets(player);
             for (AwarenessSet equippedSet : equippedSets) {
                 int count = equippedSet.countEquipped(player);
+                // 布狄卡 6件套：攻击叠层
                 if (equippedSet.getId().getPath().equals("boudica") && count >= 6) {
                     int currentStacks = boudicaStacks.getOrDefault(player, 0);
                     int stackTimer = boudicaStackTimer.getOrDefault(player, 0);
@@ -1839,6 +1900,7 @@ public class AwarenessEffectHandler {
             
             Set<AwarenessSet> equippedSets = getAllEquippedSets(player);
             for (AwarenessSet equippedSet : equippedSets) {
+                // 布狄卡：受击清空叠层
                 if (equippedSet.getId().getPath().equals("boudica")) {
                     boudicaStacks.remove(player);
                     boudicaStackTimer.remove(player);

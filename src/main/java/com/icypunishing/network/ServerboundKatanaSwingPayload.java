@@ -9,9 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/**
- * 客户端左键点击太刀时发送：请求服务端按刀身扫掠区域结算伤害。
- */
+/** C2S：左键点击太刀，请求服务端按刀身扫掠区域结算伤害。 */
 public record ServerboundKatanaSwingPayload() implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ServerboundKatanaSwingPayload> TYPE =

@@ -37,9 +37,5 @@ versionRange="[1.0.1,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
-modId="geckolib"
-mandatory=true
-versionRange="[4.9.3,)"
-ordering="AFTER"
-side="BOTH"
+[[mixins]]
+config="icy_punishing.mixins.json"
